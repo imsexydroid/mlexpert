@@ -1,0 +1,177 @@
+{
+    "uid": "probability-of-disease",
+    "testStrategy": "JSON",
+    "name": "Probability Of Disease",
+    "version": 0,
+    "releaseDate": "2023-04-08T00:00:00Z",
+    "category": "Math Concepts",
+    "difficulty": 0,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "mlexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "python"
+    ],
+    "submissionStatistics": {
+        "correctCount": 498,
+        "failureCount": 64
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "810396215",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Ryan Doan",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 333
+    },
+    "prompt": "<div class=\"html\">\n<p>\n  A test indicating the presence of disease in cats is 95% accurate in terms of\n  both sensitivity and specificity. The prevalence of the disease is 3% which means\n  only 3% of known cats have the disease. If your cat tests positive (negative)\n  for the disease, what\u2019s the probability that your cat has (doesn\u2019t have) the disease?\n</p>\n<p>\n  Write a program which takes in the accuracy of a test as well as the percent of\n  a population which has the disease and returns a list containing:\n</p>\n<ul>\n  <li>Firstly, the probability that an individual has the disease given a positive test result.</li>\n  <li>Secondly, the probability that an individual does not have the disease given a negative test result.</li>\n</ul>\n<p>Note that:</p>\n<ul>\n  <li>You can assume the sensitivity and specificity are equal to the accuracy</li>\n  <li>You shouldn't use any libraries.</li>\n  <li>\n    Your output values will automatically be rounded to the fourth decimal.\n  </li>\n</ul>\n<p></p>\n<h3>Sample Input</h3>\n<pre>\n<span class=\"CodeEditor-promptParameter\">accuracy</span> = .95\n<span class=\"CodeEditor-promptParameter\">prevalence</span> = .03\n</pre>\n<h3>Sample Output</h3>\n<pre>\n[73.6\u2026, 135.6\u2026]\n</pre>\n</div>",
+    "hints": [
+        "<p>\n  First, the probability of any random person having the disease is the prevalence.\n  The chance of a person not having the disease is 1 - prevalence. As well,\n  the inaccuracy of the test is 1 - accuracy. Keep in mind the accuracy here\n  is equal to both the sensitivity and specificity.\n</p>\n",
+        "\n<p>\n  Second, we need to determine the probability of testing positive.\n  We do that by adding together the probability of being sick and the test being accurate\n  plus the probability of being healthy and the test being inaccurate. This calculation\n  will be our denominator in figuring out the prob_healthy_given_negative.\n</p>\n",
+        "\n<p>\n  To figure out the prob_healthy_given_negative we put the probability of testing\n  negative in the case of being healthy and divide by the calculation in the previous hint.\n</p>\n",
+        "\n<p>\n  Finally, we need to determine prob_sick_given_positive. We do a similar calculation as\n  the previous hint but this time the numerator will be the probability of testing\n  positive in the case of being sick. The demoniniator will be the probability of\n  testing positive in the case of being sick plus the probability of testing positive\n  in the case of being healthy. This demonintor covers all the ways a positive test can arise.\n</p>"
+    ],
+    "spaceTime": "",
+    "notes": "",
+    "isSlowExecution": false,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "def probability_of_disease(accuracy, prevalence):\n    # Write your code here.\n    return []\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\ndef probability_of_disease(accuracy, prevalence):\n    disease_test_inaccuracy = 1 - accuracy\n    prob_healthy = 1 - prevalence\n    prob_sick = prevalence\n\n    prob_positive = (prob_sick * accuracy) + (prob_healthy * disease_test_inaccuracy)\n    prob_negative = (prob_sick * disease_test_inaccuracy) + (prob_healthy * accuracy)\n\n    prob_sick_given_positive = (prob_sick * accuracy) / prob_positive\n    prob_healthy_given_negative = (prob_healthy * accuracy) / prob_negative\n\n    return [prob_sick_given_positive*100, prob_healthy_given_negative*100]\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of some of\n# this question's test cases. Feel free to add, edit, or\n# remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        accuracy = .95\n        prevalence = .03\n        expected = [37.013, 99.8375]\n        actual = program.probability_of_disease(accuracy, prevalence)\n        self.assertEqual(round_output_values(actual), expected)\n    def test_case_2(self):\n        accuracy = 1\n        prevalence = .01\n        expected = [100, 100]\n        actual = program.probability_of_disease(accuracy, prevalence)\n        self.assertEqual(round_output_values(actual), expected)\n    def test_case_3(self):\n        accuracy = .9\n        prevalence = .05\n        expected = [32.1429, 99.4186]\n        actual = program.probability_of_disease(accuracy, prevalence)\n        self.assertEqual(round_output_values(actual), expected)\n    def test_case_4(self):\n        accuracy = .85\n        prevalence = .1\n        expected = [38.6364, 98.0769]\n        actual = program.probability_of_disease(accuracy, prevalence)\n        self.assertEqual(round_output_values(actual), expected)\n    def test_case_5(self):\n        accuracy = .8\n        prevalence = .15\n        expected = [41.3793, 95.7746]\n        actual = program.probability_of_disease(accuracy, prevalence)\n        self.assertEqual(round_output_values(actual), expected)\n    def test_case_6(self):\n        accuracy = .75\n        prevalence = .2\n        expected = [42.8571, 92.3077]\n        actual = program.probability_of_disease(accuracy, prevalence)\n        self.assertEqual(round_output_values(actual), expected)\n    def test_case_7(self):\n        accuracy = .7\n        prevalence = .25\n        expected = [43.75, 87.5]\n        actual = program.probability_of_disease(accuracy, prevalence)\n        self.assertEqual(round_output_values(actual), expected)\n    def test_case_8(self):\n        accuracy = .65\n        prevalence = .3\n        expected = [44.3182, 81.25]\n        actual = program.probability_of_disease(accuracy, prevalence)\n        self.assertEqual(round_output_values(actual), expected)\n    def test_case_9(self):\n        accuracy = .6\n        prevalence = .35\n        expected = [44.6809, 73.5849]\n        actual = program.probability_of_disease(accuracy, prevalence)\n        self.assertEqual(round_output_values(actual), expected)\n    def test_case_10(self):\n        accuracy = .55\n        prevalence = .4\n        expected = [44.898, 64.7059]\n        actual = program.probability_of_disease(accuracy, prevalence)\n        self.assertEqual(round_output_values(actual), expected)\n    def test_case_11(self):\n        accuracy = .5\n        prevalence = .45\n        expected = [45, 55]\n        actual = program.probability_of_disease(accuracy, prevalence)\n        self.assertEqual(round_output_values(actual), expected)\n    def test_case_12(self):\n        accuracy = .45\n        prevalence = .5\n        expected = [45, 45]\n        actual = program.probability_of_disease(accuracy, prevalence)\n        self.assertEqual(round_output_values(actual), expected)\n\n\ndef round_output_values(results):\n    if type(results) is not list:\n        # Bad output; let tests fail.\n        return results\n    return [round_to_4(result) for result in results]\n\n\ndef round_to_4(number):\n    if not is_number(number):\n        # Bad output; let tests fail.\n        return number\n\n    return round(number, 4)\n\n\ndef is_number(element):\n    return type(element) in (int, float)\n",
+            "unitTests": "import program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        accuracy = .95\n        prevalence = .03\n        expected = [37.013, 99.8375]\n        actual = program.probability_of_disease(accuracy, prevalence)\n        self.assertEqual(round_output_values(actual), expected)\n    def test_case_2(self):\n        accuracy = 1\n        prevalence = .01\n        expected = [100, 100]\n        actual = program.probability_of_disease(accuracy, prevalence)\n        self.assertEqual(round_output_values(actual), expected)\n    def test_case_3(self):\n        accuracy = .9\n        prevalence = .05\n        expected = [32.1429, 99.4186]\n        actual = program.probability_of_disease(accuracy, prevalence)\n        self.assertEqual(round_output_values(actual), expected)\n    def test_case_4(self):\n        accuracy = .85\n        prevalence = .1\n        expected = [38.6364, 98.0769]\n        actual = program.probability_of_disease(accuracy, prevalence)\n        self.assertEqual(round_output_values(actual), expected)\n    def test_case_5(self):\n        accuracy = .8\n        prevalence = .15\n        expected = [41.3793, 95.7746]\n        actual = program.probability_of_disease(accuracy, prevalence)\n        self.assertEqual(round_output_values(actual), expected)\n    def test_case_6(self):\n        accuracy = .75\n        prevalence = .2\n        expected = [42.8571, 92.3077]\n        actual = program.probability_of_disease(accuracy, prevalence)\n        self.assertEqual(round_output_values(actual), expected)\n    def test_case_7(self):\n        accuracy = .7\n        prevalence = .25\n        expected = [43.75, 87.5]\n        actual = program.probability_of_disease(accuracy, prevalence)\n        self.assertEqual(round_output_values(actual), expected)\n    def test_case_8(self):\n        accuracy = .65\n        prevalence = .3\n        expected = [44.3182, 81.25]\n        actual = program.probability_of_disease(accuracy, prevalence)\n        self.assertEqual(round_output_values(actual), expected)\n    def test_case_9(self):\n        accuracy = .6\n        prevalence = .35\n        expected = [44.6809, 73.5849]\n        actual = program.probability_of_disease(accuracy, prevalence)\n        self.assertEqual(round_output_values(actual), expected)\n    def test_case_10(self):\n        accuracy = .55\n        prevalence = .4\n        expected = [44.898, 64.7059]\n        actual = program.probability_of_disease(accuracy, prevalence)\n        self.assertEqual(round_output_values(actual), expected)\n    def test_case_11(self):\n        accuracy = .5\n        prevalence = .45\n        expected = [45, 55]\n        actual = program.probability_of_disease(accuracy, prevalence)\n        self.assertEqual(round_output_values(actual), expected)\n    def test_case_12(self):\n        accuracy = .45\n        prevalence = .5\n        expected = [45, 45]\n        actual = program.probability_of_disease(accuracy, prevalence)\n        self.assertEqual(round_output_values(actual), expected)\n\n\ndef round_output_values(results):\n    if type(results) is not list:\n        # Bad output; let tests fail.\n        return results\n    return [round_to_4(result) for result in results]\n\n\ndef round_to_4(number):\n    if not is_number(number):\n        # Bad output; let tests fail.\n        return number\n\n    return round(number, 4)\n\n\ndef is_number(element):\n    return type(element) in (int, float)\n"
+        }
+    },
+    "customInputVars": [
+        {
+            "name": "accuracy",
+            "example": 0.95,
+            "schema": {
+                "type": "number"
+            }
+        },
+        {
+            "name": "prevalence",
+            "example": 0.03,
+            "schema": {
+                "type": "number"
+            }
+        }
+    ],
+    "tests": [
+        {
+            "accuracy": 0.95,
+            "prevalence": 0.03
+        },
+        {
+            "accuracy": 1,
+            "prevalence": 0.01
+        },
+        {
+            "accuracy": 0.9,
+            "prevalence": 0.05
+        },
+        {
+            "accuracy": 0.85,
+            "prevalence": 0.1
+        },
+        {
+            "accuracy": 0.8,
+            "prevalence": 0.15
+        },
+        {
+            "accuracy": 0.75,
+            "prevalence": 0.2
+        },
+        {
+            "accuracy": 0.7,
+            "prevalence": 0.25
+        },
+        {
+            "accuracy": 0.65,
+            "prevalence": 0.3
+        },
+        {
+            "accuracy": 0.6,
+            "prevalence": 0.35
+        },
+        {
+            "accuracy": 0.55,
+            "prevalence": 0.4
+        },
+        {
+            "accuracy": 0.5,
+            "prevalence": 0.45
+        },
+        {
+            "accuracy": 0.45,
+            "prevalence": 0.5
+        }
+    ],
+    "jsonTests": [
+        {
+            "accuracy": 0.95,
+            "prevalence": 0.03
+        },
+        {
+            "accuracy": 1,
+            "prevalence": 0.01
+        },
+        {
+            "accuracy": 0.9,
+            "prevalence": 0.05
+        },
+        {
+            "accuracy": 0.85,
+            "prevalence": 0.1
+        },
+        {
+            "accuracy": 0.8,
+            "prevalence": 0.15
+        },
+        {
+            "accuracy": 0.75,
+            "prevalence": 0.2
+        },
+        {
+            "accuracy": 0.7,
+            "prevalence": 0.25
+        },
+        {
+            "accuracy": 0.65,
+            "prevalence": 0.3
+        },
+        {
+            "accuracy": 0.6,
+            "prevalence": 0.35
+        },
+        {
+            "accuracy": 0.55,
+            "prevalence": 0.4
+        },
+        {
+            "accuracy": 0.5,
+            "prevalence": 0.45
+        },
+        {
+            "accuracy": 0.45,
+            "prevalence": 0.5
+        }
+    ],
+    "changelog": []
+}

@@ -1,0 +1,178 @@
+{
+    "uid": "repeating-heads",
+    "testStrategy": "JSON",
+    "name": "Repeating Heads",
+    "version": 0,
+    "releaseDate": "2023-04-08T00:00:00Z",
+    "category": "Math Concepts",
+    "difficulty": 0,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "mlexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "python"
+    ],
+    "submissionStatistics": {
+        "correctCount": 530,
+        "failureCount": 87
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "810396546",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Ryan Doan",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 230
+    },
+    "prompt": "<div class=\"html\">\n<p>\n  You\u2019re considering a $100 bet with your friend. If <span class=\"CodeEditor-promptParameter\">n</span> consecutive\n  fair coin flips result in all heads, then you win - else your friend wins. Your friend agrees to let you attempt\n  the bet as many times as you\u2019d like. Assuming you attempt the bet <span class=\"CodeEditor-promptParameter\">x</span>\n  times, what's the probability that you\u2019ll win the bet at least once? As well, what should your winning payout ($100, $200, etc)\n  be to ensure that you at least break even given unlimited attempts of the bet?\n</p>\n<p>\n  Write a function which takes in the number of consecutive coin flips (n) and the\n  number of bet attempts (x) and returns a list containing:\n</p>\n<ul>\n  <li>Firstly, the probability that you win the bet at least once</li>\n  <li>Secondly, your required winning payout</li>\n</ul>\n<p>Note that:</p>\n<ul>\n  <li>You can assume a fair coin.</li>\n  <li>You shouldn't use any libraries.</li>\n  <li>\n    Your output values will automatically be rounded to the fourth decimal.\n  </li>\n</ul>\n<p></p>\n<h3>Sample Input</h3>\n<pre>\n<span class=\"CodeEditor-promptParameter\">n</span> = 3\n<span class=\"CodeEditor-promptParameter\">x</span> = 10\n</pre>\n<h3>Sample Output</h3>\n<pre>\n[73.6\u2026, 135.6\u2026]\n</pre>\n</div>",
+    "hints": [
+        "<p>\n  First, we need to identify the chance of flipping a heads on a fair coin. It\u2019s 50%\n</p>\n",
+        "\n<p>\n  Then, we need to determine the chance of flipping n heads in a row - this is referred to as a trial.\n  That\u2019s going to be the chance of flipping heads a single time raised to the power of n.\n</p>\n",
+        "\n<p>\n  Then, we need to establish what the chance of us losing a single trial is.\n  This is 1 - the chance of a single winning trial\n</p>\n",
+        "\n<p>\n  Next, we need to know the chance of losing n consecutive trials.\n  This is going to be the chance of losing a single trial raised to the\n  power of the number of bet attempts. We can subtract this result from\n  1 to obtain the probability that we\u2019ll win the bet given a number of attempts.\n</p>\n",
+        "\n<p>\n  Finally, we can determine the winning payout required to break even given\n  infinite attempts. We do this by multiplying the chance of winning by an\n  unknown payout size and setting the equation equal to the original bet size.\n  Solving for the unknown payout results in the required winning payout.\n</p>"
+    ],
+    "spaceTime": "",
+    "notes": "",
+    "isSlowExecution": false,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "def repeating_heads(n, x):\n    # Write your code here.\n    return []\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\ndef repeating_heads(n, x):\n    bet_size = 100\n    heads_chance = 1/2\n    trial_win_chance = heads_chance**n\n    trial_lose_chance = 1 - trial_win_chance\n    repeated_trial_lose_chance = trial_lose_chance**x\n    repeated_trial_win_chance = 1 - repeated_trial_lose_chance\n    break_even_payout = bet_size/repeated_trial_win_chance\n    return [repeated_trial_win_chance*100, break_even_payout]\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of some of\n# this question's test cases. Feel free to add, edit, or\n# remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        n = 3\n        x = 10\n        expected = [73.6924, 135.6991]\n        actual = program.repeating_heads(n, x)\n        self.assertEqual(round_output_values(actual), expected)\n    def test_case_2(self):\n        n = 0\n        x = 5\n        expected = [100.0, 100.0]\n        actual = program.repeating_heads(n, x)\n        self.assertEqual(round_output_values(actual), expected)\n    def test_case_3(self):\n        n = 1\n        x = 12\n        expected = [99.9756, 100.0244]\n        actual = program.repeating_heads(n, x)\n        self.assertEqual(round_output_values(actual), expected)\n    def test_case_4(self):\n        n = 2\n        x = 18\n        expected = [99.4362, 100.567]\n        actual = program.repeating_heads(n, x)\n        self.assertEqual(round_output_values(actual), expected)\n    def test_case_5(self):\n        n = 4\n        x = 30\n        expected = [85.5743, 116.8576]\n        actual = program.repeating_heads(n, x)\n        self.assertEqual(round_output_values(actual), expected)\n    def test_case_6(self):\n        n = 5\n        x = 52\n        expected = [80.8129, 123.7426]\n        actual = program.repeating_heads(n, x)\n        self.assertEqual(round_output_values(actual), expected)\n    def test_case_7(self):\n        n = 6\n        x = 77\n        expected = [70.2584, 142.3317]\n        actual = program.repeating_heads(n, x)\n        self.assertEqual(round_output_values(actual), expected)\n    def test_case_8(self):\n        n = 7\n        x = 87\n        expected = [49.4575, 202.1936]\n        actual = program.repeating_heads(n, x)\n        self.assertEqual(round_output_values(actual), expected)\n    def test_case_9(self):\n        n = 8\n        x = 92\n        expected = [30.2379, 330.7112]\n        actual = program.repeating_heads(n, x)\n        self.assertEqual(round_output_values(actual), expected)\n    def test_case_10(self):\n        n = 9\n        x = 98\n        expected = [17.4358, 573.5342]\n        actual = program.repeating_heads(n, x)\n        self.assertEqual(round_output_values(actual), expected)\n    def test_case_11(self):\n        n = 10\n        x = 100\n        expected = [9.3083, 1074.314]\n        actual = program.repeating_heads(n, x)\n        self.assertEqual(round_output_values(actual), expected)\n    def test_case_12(self):\n        n = 10\n        x = 1\n        expected = [0.0977, 102400.0]\n        actual = program.repeating_heads(n, x)\n        self.assertEqual(round_output_values(actual), expected)\n\n\ndef round_output_values(results):\n    if type(results) is not list:\n        # Bad output; let tests fail.\n        return results\n    return [round_to_4(result) for result in results]\n\n\ndef round_to_4(number):\n    if not is_number(number):\n        # Bad output; let tests fail.\n        return number\n\n    return round(number, 4)\n\n\ndef is_number(element):\n    return type(element) in (int, float)\n",
+            "unitTests": "import program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        n = 3\n        x = 10\n        expected = [73.6924, 135.6991]\n        actual = program.repeating_heads(n, x)\n        self.assertEqual(round_output_values(actual), expected)\n    def test_case_2(self):\n        n = 0\n        x = 5\n        expected = [100.0, 100.0]\n        actual = program.repeating_heads(n, x)\n        self.assertEqual(round_output_values(actual), expected)\n    def test_case_3(self):\n        n = 1\n        x = 12\n        expected = [99.9756, 100.0244]\n        actual = program.repeating_heads(n, x)\n        self.assertEqual(round_output_values(actual), expected)\n    def test_case_4(self):\n        n = 2\n        x = 18\n        expected = [99.4362, 100.567]\n        actual = program.repeating_heads(n, x)\n        self.assertEqual(round_output_values(actual), expected)\n    def test_case_5(self):\n        n = 4\n        x = 30\n        expected = [85.5743, 116.8576]\n        actual = program.repeating_heads(n, x)\n        self.assertEqual(round_output_values(actual), expected)\n    def test_case_6(self):\n        n = 5\n        x = 52\n        expected = [80.8129, 123.7426]\n        actual = program.repeating_heads(n, x)\n        self.assertEqual(round_output_values(actual), expected)\n    def test_case_7(self):\n        n = 6\n        x = 77\n        expected = [70.2584, 142.3317]\n        actual = program.repeating_heads(n, x)\n        self.assertEqual(round_output_values(actual), expected)\n    def test_case_8(self):\n        n = 7\n        x = 87\n        expected = [49.4575, 202.1936]\n        actual = program.repeating_heads(n, x)\n        self.assertEqual(round_output_values(actual), expected)\n    def test_case_9(self):\n        n = 8\n        x = 92\n        expected = [30.2379, 330.7112]\n        actual = program.repeating_heads(n, x)\n        self.assertEqual(round_output_values(actual), expected)\n    def test_case_10(self):\n        n = 9\n        x = 98\n        expected = [17.4358, 573.5342]\n        actual = program.repeating_heads(n, x)\n        self.assertEqual(round_output_values(actual), expected)\n    def test_case_11(self):\n        n = 10\n        x = 100\n        expected = [9.3083, 1074.314]\n        actual = program.repeating_heads(n, x)\n        self.assertEqual(round_output_values(actual), expected)\n    def test_case_12(self):\n        n = 10\n        x = 1\n        expected = [0.0977, 102400.0]\n        actual = program.repeating_heads(n, x)\n        self.assertEqual(round_output_values(actual), expected)\n\n\ndef round_output_values(results):\n    if type(results) is not list:\n        # Bad output; let tests fail.\n        return results\n    return [round_to_4(result) for result in results]\n\n\ndef round_to_4(number):\n    if not is_number(number):\n        # Bad output; let tests fail.\n        return number\n\n    return round(number, 4)\n\n\ndef is_number(element):\n    return type(element) in (int, float)\n"
+        }
+    },
+    "customInputVars": [
+        {
+            "name": "n",
+            "example": 3,
+            "schema": {
+                "type": "integer"
+            }
+        },
+        {
+            "name": "x",
+            "example": 10,
+            "schema": {
+                "type": "integer"
+            }
+        }
+    ],
+    "tests": [
+        {
+            "n": 3,
+            "x": 10
+        },
+        {
+            "n": 0,
+            "x": 5
+        },
+        {
+            "n": 1,
+            "x": 12
+        },
+        {
+            "n": 2,
+            "x": 18
+        },
+        {
+            "n": 4,
+            "x": 30
+        },
+        {
+            "n": 5,
+            "x": 52
+        },
+        {
+            "n": 6,
+            "x": 77
+        },
+        {
+            "n": 7,
+            "x": 87
+        },
+        {
+            "n": 8,
+            "x": 92
+        },
+        {
+            "n": 9,
+            "x": 98
+        },
+        {
+            "n": 10,
+            "x": 100
+        },
+        {
+            "n": 10,
+            "x": 1
+        }
+    ],
+    "jsonTests": [
+        {
+            "n": 3,
+            "x": 10
+        },
+        {
+            "n": 0,
+            "x": 5
+        },
+        {
+            "n": 1,
+            "x": 12
+        },
+        {
+            "n": 2,
+            "x": 18
+        },
+        {
+            "n": 4,
+            "x": 30
+        },
+        {
+            "n": 5,
+            "x": 52
+        },
+        {
+            "n": 6,
+            "x": 77
+        },
+        {
+            "n": 7,
+            "x": 87
+        },
+        {
+            "n": 8,
+            "x": 92
+        },
+        {
+            "n": 9,
+            "x": 98
+        },
+        {
+            "n": 10,
+            "x": 100
+        },
+        {
+            "n": 10,
+            "x": 1
+        }
+    ],
+    "changelog": []
+}

@@ -1,0 +1,64 @@
+{
+    "uid": "image-preprocessing",
+    "testStrategy": "DATA_PROCESSING",
+    "name": "Image Preprocessing",
+    "version": 0,
+    "releaseDate": "2023-04-08T00:00:00Z",
+    "category": "Data Processing",
+    "difficulty": 0,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "mlexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "python"
+    ],
+    "submissionStatistics": {
+        "correctCount": 153,
+        "failureCount": 37
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "811063346",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Ryan Doan",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 240
+    },
+    "prompt": "<div class=\"html\">\n<p>\n  Image classification problems often require you to perform preprocessing of the\n  training images to ensure that the image classification model is generalizable\n  into the test and validation data sets.\n</p>\n<p>\n  Implement and return an image preprocessing pipeline using\n  <a\n    class=\"Link Link--mle\"\n    href=https://www.tensorflow.org/api_docs/python/tf/keras/layers\"\n    target=\"_blank\"\n    >Tensorflow</a\n  > sequential layers.\n</p>\n<p>The image preprocessing pipeline should contain:</p>\n<ul>\n  <li>A resizing layer of 180x180x3</li>\n  <li>A rescaling layer to result in pixel values between 0 and 1</li>\n  <li>A random flip layer to result in horizontal and vertical augmentation</li>\n  <li>A random rotation layer with a factor of 0.1</li>\n  <li>A random contrast layer with a factor of 0.1</li>\n  <li>A random crop layer with a height and width factor of 0.9</li>\n  <li>A random zoom layer with a height and width factor of 0.1</li>\n  <li>A random translation layer with a height and width factor of 0.1</li>\n  <li>A random brightness layer with a factor of 0.1</li>\n</ul>\n<p>\n  You will then build the pipeline with an input layer of 270x270x3 and then return\n  the complied image processing pipeline.\n</p>\n</div>",
+    "hints": [
+        "<p>\n  First, we need to create an empty sequential model.\n</p>\n",
+        "\n<p>\n  Then, we need to insert each layer into the sequential model.\n</p>\n",
+        "\n<p>\n  Next, we need to build the model and specify the input layer size.\n</p>\n",
+        "\n<p>\n  Lastly, we need to return the built sequential model.\n</p>"
+    ],
+    "spaceTime": "",
+    "notes": "",
+    "isSlowExecution": true,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "import tensorflow as tf\nfrom tensorflow.keras import layers\n\n\ndef get_image_preprocessing_pipeline(input_size, resize):\n    # Write your code here.\n    pass\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport tensorflow as tf\nfrom tensorflow.keras import layers\n\n\ndef get_image_preprocessing_pipeline(input_size, resize):\n    image_preprocessing_pipeline = tf.keras.Sequential([\n      layers.Resizing(height=resize, width=resize),\n      layers.Rescaling(1./255),\n      layers.RandomFlip(\"horizontal_and_vertical\"),\n      layers.RandomRotation(0.1),\n      layers.RandomContrast(0.1),\n      layers.RandomCrop(int(resize*.9), int(resize*.9), 3),\n      layers.RandomZoom(height_factor=0.1, width_factor=0.1),\n      layers.RandomTranslation(height_factor=0.1, width_factor=0.1),\n      layers.RandomBrightness(factor=0.1)\n    ])\n    image_preprocessing_pipeline.build(input_shape=(input_size, input_size, 3))\n    return image_preprocessing_pipeline\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of some of\n# this question's test cases. Feel free to add, edit, or\n# remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        pass\n",
+            "unitTests": "import program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        pass\n"
+        }
+    },
+    "customInputVars": [],
+    "tests": [],
+    "jsonTests": [],
+    "changelog": []
+}

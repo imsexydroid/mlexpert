@@ -1,0 +1,314 @@
+{
+    "uid": "multinomial-naive-bayes",
+    "testStrategy": "JSON",
+    "name": "Multinomial Naive Bayes",
+    "version": 0,
+    "releaseDate": "2021-05-24T00:00:00Z",
+    "category": "Model Concepts",
+    "difficulty": 0,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "mlexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "python"
+    ],
+    "submissionStatistics": {
+        "correctCount": 657,
+        "failureCount": 218
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "566939787",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Ryan Doan",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 273
+    },
+    "prompt": "<div class=\"html\">\n<p>\n  Create a multinomial Naive Bayes classifier to add tags to articles, where\n  tags represent categories that articles should belong to.\n</p>\n<p>\n  You'll have access to training articles inside of a dictionary\n  <span>MultinomialNB.articles_per_tag</span> mapping tags to the articles\n  belonging to said tags.\n</p>\n<p>\n  Below is an example portion of the\n  <span>MultinomialNB.articles_per_tag</span>:\n</p>\n<pre>\n{\n  \"politics\": [\n    [\"article\", \"writes\", \"Joel\", \"Furr\", \"writes\", <span class=\"CodeEditor-promptComment\"># ... more words</span>],\n    [\"Distribution\", \"world\", \"following\", \"posted\", <span class=\"CodeEditor-promptComment\"># ... more words</span>],\n    <span class=\"CodeEditor-promptComment\"># ...</span>\n    <span class=\"CodeEditor-promptComment\"># More articles.</span>\n    ],\n    \"sports\": [\n    [\"article\", \"writes\", \"just\", \"wanted\", <span class=\"CodeEditor-promptComment\"># ... more words</span>],\n    [\"Phillies\", \"salvaged\", \"their\", \"weekend\", <span class=\"CodeEditor-promptComment\"># ... more words</span>],\n    <span class=\"CodeEditor-promptComment\"># ...</span>\n    <span class=\"CodeEditor-promptComment\"># More articles.</span>\n    ],\n    \"tech\": [\n    [\"Thanks\", \"Steve\", \"your\", \"helpful\", <span class=\"CodeEditor-promptComment\"># ... more words</span>],\n    [\"Please\", \"unsubscribe\", \"This\", \"user\", <span class=\"CodeEditor-promptComment\"># ... more words</span>],\n    <span class=\"CodeEditor-promptComment\"># ...</span>\n    <span class=\"CodeEditor-promptComment\"># More articles.</span>\n  ],\n}\n</pre>\n<p>Note that:</p>\n<ul>\n  <li>\n    The Laplacian smoothing hyperparameter has been chosen to be <span>1</span>,\n    which means that when calculating likelihoods, you'll be adding\n    <span>2</span> to the denominator and <span>1</span> to the numerator.\n  </li>\n  <li>\n    If an input to the model contains a word that is not in the trained Naive\n    Bayes model, that word should be assigned a class probability of 50%.\n  </li>\n  <li>You shouldn't use use TF-IDF.</li>\n  <li>\n    You shouldn't use any libraries that implement the multinomial Naive Bayes\n    classifier for you, such as scikit-learn.\n  </li>\n  <li>\n    You're encouraged to use the <span>collections</span> module as well as the\n    <span>math</span> module.\n  </li>\n  <li>\n    Your output values will automatically be rounded to the fourth decimal.\n  </li>\n</ul>\n<p>\n  If you're unfamiliar with Naive Bayes classifers, we recommend watching the\n  Naive Bayes video in the ML Crash Course on MLExpert before starting to code.\n</p>\n<h3>Sample Input</h3>\n<pre>\n<span class=\"CodeEditor-promptParameter\">article</span> = [\n  \"article\", \"writes\", \"while\",\n  \"when\", \"owned\", \"Plus\",\n  \"wanted\", \"upgrade\", \"memory\",\n  \"just\", \"ordered\", \"toolkit\",\n  \"from\", \"Macwarehouse\", \"something\",\n  \"like\", \"included\", \"antistatic\",\n]\n</pre>\n<h3>Sample Output</h3>\n<pre>\n{\n  \"politics\": -91.3016,\n  \"sports\": -87.1427,\n  \"tech\": -85.1920\n}\n<span class=\"CodeEditor-promptComment\"># The log probability for each article tag.</span>\n</pre>\n</div>",
+    "hints": [
+        "<p>\n  Think about what terms are needed to calculate the Naive Bayes posterior.\n  Remember that you'll only need to calculate the numerator of each tag; the\n  most probable tag produces the highest numerator.\n</p>\n",
+        "\n<p>\n  Start training the model by calculating the prior for each tag. That's the log\n  probability of getting each tag, regardless of the article content. This means\n  counting the number of articles per tag and dividing by the total number of\n  articles across all tags.\n</p>\n",
+        "\n<p>\n  Besides the prior, the other required term for training the multinomial Naive\n  Bayes model is the multinomial likelihoods per tag. This means, for each word,\n  counting the occurrences of the word in the tag and dividing that count\n  by the total number of words in the tag. Don't forget Laplacian smoothing.\n</p>\n",
+        "\n<p>\n  Now that the likelihood per word per tag is calculated along with the prior of\n  each tag, we can form a prediction given an input. For each tag, and for each\n  word in the input, we have to find the total log likelihood of that particular\n  input belonging to a particular tag.\n</p>\n",
+        "\n<p>\n  To find the log likelihood for a given input, iterate through each word in the\n  input, and look up each word's log likelihood for a given tag that you're\n  calculating.\n</p>\n",
+        "\n<p>\n  After you've found the log likelihood, don't forget to add the tag prior to\n  find the posterior.\n</p>"
+    ],
+    "spaceTime": "",
+    "notes": "",
+    "isSlowExecution": false,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "class MultinomialNB:\n    def __init__(self, articles_per_tag):\n        # Don't change the following two lines of code.\n        self.articles_per_tag = articles_per_tag  # See question prompt for details.\n        self.train()\n\n    def train(self):\n        # Write your code here.\n        pass\n\n    def predict(self, article):\n        # Write your code here.\n        pass\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nfrom collections import defaultdict\nimport math\n\n\nclass MultinomialNB:\n    def __init__(self, articles_per_tag):\n        self.alpha = 1\n        self.priors_per_tag = {}\n        self.likelihood_per_word_per_tag = {}\n        # Don't change the following lines of code.\n        self.articles_per_tag = articles_per_tag  # See question prompt for details.\n        self.tags = articles_per_tag.keys()\n        self.train()\n\n    def train(self):\n        tag_counts_map = {tag: len(self.articles_per_tag[tag]) for tag in self.tags}\n        self.priors_per_tag = {tag: tag_counts_map[tag] / sum(tag_counts_map.values()) for tag in self.tags}\n        self.likelihood_per_word_per_tag = self.__get_word_likelihoods_per_tag()\n\n    def predict(self, article):\n        posteriors_per_tag = {tag: math.log(prior) for tag, prior in self.priors_per_tag.items()}\n        for word in article:\n            for tag in self.tags:\n                posteriors_per_tag[tag] = posteriors_per_tag[tag] + math.log(\n                    self.likelihood_per_word_per_tag[word][tag]\n                )\n        return posteriors_per_tag\n\n    def __get_word_likelihoods_per_tag(self):\n        word_frequencies_per_tag = defaultdict(lambda: {tag: 0 for tag in self.tags})\n        total_word_count_per_tag = defaultdict(int)\n        for tag in self.tags:\n            for article in self.articles_per_tag[tag]:\n                for word in article:\n                    word_frequencies_per_tag[word][tag] += 1\n                    total_word_count_per_tag[tag] += 1\n        word_likelihoods_per_tag = defaultdict(lambda: {tag: 0.5 for tag in self.tags})\n        for word, tags_map in word_frequencies_per_tag.items():\n            for tag in tags_map.keys():\n                word_likelihoods_per_tag[word][tag] = (word_frequencies_per_tag[word][tag] + 1 * self.alpha) / (\n                    total_word_count_per_tag[tag] + 2 * self.alpha\n                )\n        return word_likelihoods_per_tag\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of some of\n# this question's test cases. Feel free to add, edit, or\n# remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\nimport os\nimport pickle\n\n_DATA_DIR = os.path.dirname(os.path.realpath(__file__)) + \"/data\"\n\n\nwith open(f\"{_DATA_DIR}/articles_decimated.pickle\", \"rb\") as handle:\n    examples = pickle.load(handle)\n\nmultinomial_nb = program.MultinomialNB(examples)\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        article = [\n            \"article\",\n            \"writes\",\n            \"while\",\n            \"when\",\n            \"owned\",\n            \"Plus\",\n            \"wanted\",\n            \"upgrade\",\n            \"memory\",\n            \"just\",\n            \"ordered\",\n            \"toolkit\",\n            \"from\",\n            \"Macwarehouse\",\n            \"something\",\n            \"like\",\n            \"included\",\n            \"antistatic\",\n        ]\n        expected = {'politics': -91.3016, 'sports': -87.1427, 'tech': -85.1920}\n        actual = multinomial_nb.predict(article)\n        self.assertEqual(round_output_values(actual), expected)\n\n    def test_case_2(self):\n        article = [\"Went\", \"Dodgers\", \"game\", \"tonight\", \"night\", \"Astacio\", \"pitched\"]\n        expected = {'politics': -18.6497, 'sports': -16.9614, 'tech': -19.0964}\n        actual = multinomial_nb.predict(article)\n        self.assertEqual(round_output_values(actual), expected)\n\n    def test_case_3(self):\n        article = [\n            \"motives\",\n            \"were\",\n            \"twofold\",\n            \"deeply\",\n            \"held\",\n            \"democratic\",\n            \"convictions\",\n            \"gave\",\n            \"sense\",\n            \"duty\",\n            \"felt\",\n            \"obliged\",\n            \"shed\",\n            \"light\",\n            \"this\",\n        ]\n        expected = {'politics': -41.8873, 'sports': -41.6120, 'tech': -40.5663}\n        actual = multinomial_nb.predict(article)\n        self.assertEqual(round_output_values(actual), expected)\n\n    def test_case_4(self):\n        article = [\n            \"CDROMs\",\n            \"with\",\n            \"SCSIInterface\",\n            \"known\",\n            \"much\",\n            \"they\",\n            \"present\",\n            \"market\",\n            \"Please\",\n            \"mail\",\n            \"direcktly\",\n            \"reguarly\",\n            \"reading\",\n            \"group\",\n        ]\n        expected = {'politics': -66.1408, 'sports': -63.3422, 'tech': -61.7544}\n        actual = multinomial_nb.predict(article)\n        self.assertEqual(round_output_values(actual), expected)\n\n    def test_case_5(self):\n        article = [\n            \"wall\",\n            \"behind\",\n            \"goals\",\n            \"essentially\",\n            \"outdoor\",\n            \"arena\",\n            \"Colognes\",\n            \"arena\",\n            \"only\",\n            \"seats\",\n            \"about\",\n            \"70008000\",\n            \"Berlin\",\n            \"about\",\n            \"6000\",\n        ]\n        expected = {'politics': -54.4575, 'sports': -52.0613, 'tech': -52.1966}\n        actual = multinomial_nb.predict(article)\n        self.assertEqual(round_output_values(actual), expected)\n\n    def test_case_6(self):\n        article = [\n            \"speak\",\n            \"anyone\",\n            \"connected\",\n            \"highres\",\n            \"fixed\",\n            \"frequency\",\n            \"monitor\",\n            \"their\",\n            \"have\",\n            \"mitubishi\",\n            \"monitor\",\n            \"that\",\n            \"does\",\n            \"1024x768\",\n            \"60hz\",\n        ]\n        expected = {'politics': -53.7736, 'sports': -56.4307, 'tech': -55.2141}\n        actual = multinomial_nb.predict(article)\n        self.assertEqual(round_output_values(actual), expected)\n\n\ndef round_output_values(output):\n    if type(output) is not dict:\n        # Bad output; let tests fail.\n        return output\n\n    new_output = {}\n    for key in output.keys():\n        new_output[key] = round_to_4(output[key])\n\n    return new_output\n\n\ndef round_to_4(number):\n    if not is_number(number):\n        # Bad output; let tests fail.\n        return number\n\n    return round(number, 4)\n\n\ndef is_number(element):\n    return type(element) in (int, float)\n",
+            "unitTests": "import program\nimport unittest\n\nimport os\nimport pickle\n\n_DATA_DIR = os.path.dirname(os.path.realpath(__file__)) + \"/data\"\n\n\nwith open(f\"{_DATA_DIR}/articles_decimated.pickle\", \"rb\") as handle:\n    examples = pickle.load(handle)\n\nmultinomial_nb = program.MultinomialNB(examples)\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        article = [\n            \"article\",\n            \"writes\",\n            \"while\",\n            \"when\",\n            \"owned\",\n            \"Plus\",\n            \"wanted\",\n            \"upgrade\",\n            \"memory\",\n            \"just\",\n            \"ordered\",\n            \"toolkit\",\n            \"from\",\n            \"Macwarehouse\",\n            \"something\",\n            \"like\",\n            \"included\",\n            \"antistatic\",\n        ]\n        expected = {'politics': -91.3016, 'sports': -87.1427, 'tech': -85.1920}\n        actual = multinomial_nb.predict(article)\n        self.assertEqual(round_output_values(actual), expected)\n\n    def test_case_2(self):\n        article = [\"Went\", \"Dodgers\", \"game\", \"tonight\", \"night\", \"Astacio\", \"pitched\"]\n        expected = {'politics': -18.6497, 'sports': -16.9614, 'tech': -19.0964}\n        actual = multinomial_nb.predict(article)\n        self.assertEqual(round_output_values(actual), expected)\n\n    def test_case_3(self):\n        article = [\n            \"motives\",\n            \"were\",\n            \"twofold\",\n            \"deeply\",\n            \"held\",\n            \"democratic\",\n            \"convictions\",\n            \"gave\",\n            \"sense\",\n            \"duty\",\n            \"felt\",\n            \"obliged\",\n            \"shed\",\n            \"light\",\n            \"this\",\n        ]\n        expected = {'politics': -41.8873, 'sports': -41.6120, 'tech': -40.5663}\n        actual = multinomial_nb.predict(article)\n        self.assertEqual(round_output_values(actual), expected)\n\n    def test_case_4(self):\n        article = [\n            \"CDROMs\",\n            \"with\",\n            \"SCSIInterface\",\n            \"known\",\n            \"much\",\n            \"they\",\n            \"present\",\n            \"market\",\n            \"Please\",\n            \"mail\",\n            \"direcktly\",\n            \"reguarly\",\n            \"reading\",\n            \"group\",\n        ]\n        expected = {'politics': -66.1408, 'sports': -63.3422, 'tech': -61.7544}\n        actual = multinomial_nb.predict(article)\n        self.assertEqual(round_output_values(actual), expected)\n\n    def test_case_5(self):\n        article = [\n            \"wall\",\n            \"behind\",\n            \"goals\",\n            \"essentially\",\n            \"outdoor\",\n            \"arena\",\n            \"Colognes\",\n            \"arena\",\n            \"only\",\n            \"seats\",\n            \"about\",\n            \"70008000\",\n            \"Berlin\",\n            \"about\",\n            \"6000\",\n        ]\n        expected = {'politics': -54.4575, 'sports': -52.0613, 'tech': -52.1966}\n        actual = multinomial_nb.predict(article)\n        self.assertEqual(round_output_values(actual), expected)\n\n    def test_case_6(self):\n        article = [\n            \"speak\",\n            \"anyone\",\n            \"connected\",\n            \"highres\",\n            \"fixed\",\n            \"frequency\",\n            \"monitor\",\n            \"their\",\n            \"have\",\n            \"mitubishi\",\n            \"monitor\",\n            \"that\",\n            \"does\",\n            \"1024x768\",\n            \"60hz\",\n        ]\n        expected = {'politics': -53.7736, 'sports': -56.4307, 'tech': -55.2141}\n        actual = multinomial_nb.predict(article)\n        self.assertEqual(round_output_values(actual), expected)\n\n\ndef round_output_values(output):\n    if type(output) is not dict:\n        # Bad output; let tests fail.\n        return output\n\n    new_output = {}\n    for key in output.keys():\n        new_output[key] = round_to_4(output[key])\n\n    return new_output\n\n\ndef round_to_4(number):\n    if not is_number(number):\n        # Bad output; let tests fail.\n        return number\n\n    return round(number, 4)\n\n\ndef is_number(element):\n    return type(element) in (int, float)\n"
+        }
+    },
+    "customInputVars": [
+        {
+            "name": "article",
+            "example": [
+                "article",
+                "writes",
+                "while",
+                "when",
+                "owned",
+                "Plus",
+                "wanted",
+                "upgrade",
+                "memory",
+                "just",
+                "ordered",
+                "toolkit",
+                "from",
+                "Macwarehouse",
+                "something",
+                "like",
+                "included",
+                "antistatic"
+            ],
+            "schema": {
+                "items": {
+                    "type": "string"
+                },
+                "type": "array"
+            }
+        }
+    ],
+    "tests": [
+        {
+            "article": [
+                "article",
+                "writes",
+                "while",
+                "when",
+                "owned",
+                "Plus",
+                "wanted",
+                "upgrade",
+                "memory",
+                "just",
+                "ordered",
+                "toolkit",
+                "from",
+                "Macwarehouse",
+                "something",
+                "like",
+                "included",
+                "antistatic"
+            ]
+        },
+        {
+            "article": [
+                "Went",
+                "Dodgers",
+                "game",
+                "tonight",
+                "night",
+                "Astacio",
+                "pitched"
+            ]
+        },
+        {
+            "article": [
+                "motives",
+                "were",
+                "twofold",
+                "deeply",
+                "held",
+                "democratic",
+                "convictions",
+                "gave",
+                "sense",
+                "duty",
+                "felt",
+                "obliged",
+                "shed",
+                "light",
+                "this"
+            ]
+        },
+        {
+            "article": [
+                "CDROMs",
+                "with",
+                "SCSIInterface",
+                "known",
+                "much",
+                "they",
+                "present",
+                "market",
+                "Please",
+                "mail",
+                "direcktly",
+                "reguarly",
+                "reading",
+                "group"
+            ]
+        },
+        {
+            "article": [
+                "wall",
+                "behind",
+                "goals",
+                "essentially",
+                "outdoor",
+                "arena",
+                "Colognes",
+                "arena",
+                "only",
+                "seats",
+                "about",
+                "70008000",
+                "Berlin",
+                "about",
+                "6000"
+            ]
+        },
+        {
+            "article": [
+                "speak",
+                "anyone",
+                "connected",
+                "highres",
+                "fixed",
+                "frequency",
+                "monitor",
+                "their",
+                "have",
+                "mitubishi",
+                "monitor",
+                "that",
+                "does",
+                "1024x768",
+                "60hz"
+            ]
+        }
+    ],
+    "jsonTests": [
+        {
+            "article": [
+                "article",
+                "writes",
+                "while",
+                "when",
+                "owned",
+                "Plus",
+                "wanted",
+                "upgrade",
+                "memory",
+                "just",
+                "ordered",
+                "toolkit",
+                "from",
+                "Macwarehouse",
+                "something",
+                "like",
+                "included",
+                "antistatic"
+            ]
+        },
+        {
+            "article": [
+                "Went",
+                "Dodgers",
+                "game",
+                "tonight",
+                "night",
+                "Astacio",
+                "pitched"
+            ]
+        },
+        {
+            "article": [
+                "motives",
+                "were",
+                "twofold",
+                "deeply",
+                "held",
+                "democratic",
+                "convictions",
+                "gave",
+                "sense",
+                "duty",
+                "felt",
+                "obliged",
+                "shed",
+                "light",
+                "this"
+            ]
+        },
+        {
+            "article": [
+                "CDROMs",
+                "with",
+                "SCSIInterface",
+                "known",
+                "much",
+                "they",
+                "present",
+                "market",
+                "Please",
+                "mail",
+                "direcktly",
+                "reguarly",
+                "reading",
+                "group"
+            ]
+        },
+        {
+            "article": [
+                "wall",
+                "behind",
+                "goals",
+                "essentially",
+                "outdoor",
+                "arena",
+                "Colognes",
+                "arena",
+                "only",
+                "seats",
+                "about",
+                "70008000",
+                "Berlin",
+                "about",
+                "6000"
+            ]
+        },
+        {
+            "article": [
+                "speak",
+                "anyone",
+                "connected",
+                "highres",
+                "fixed",
+                "frequency",
+                "monitor",
+                "their",
+                "have",
+                "mitubishi",
+                "monitor",
+                "that",
+                "does",
+                "1024x768",
+                "60hz"
+            ]
+        }
+    ],
+    "changelog": []
+}

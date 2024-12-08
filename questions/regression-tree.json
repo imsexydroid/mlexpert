@@ -1,0 +1,196 @@
+{
+    "uid": "regression-tree",
+    "testStrategy": "JSON",
+    "name": "Regression Tree",
+    "version": 0,
+    "releaseDate": "2021-05-24T00:00:00Z",
+    "category": "Model Concepts",
+    "difficulty": 0,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "mlexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "python"
+    ],
+    "submissionStatistics": {
+        "correctCount": 508,
+        "failureCount": 206
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "560253621",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Ryan Doan",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 365
+    },
+    "prompt": "<div class=\"html\">\n<p>\n  Create a regression tree to predict the barrels per day (the\n  <span>bpd</span>) produced by a particular drilling site, given some\n  <span>porosity</span>, <span>gamma</span>, <span>sonic</span>, and\n  <span>density</span> values.\n</p>\n<p>\n  You'll have access to a list of training examples in the\n  <span>RegressionTree</span>'s <span>root</span> node, specifically in\n  <span>RegressionTree.root.examples</span>. Each example is a dictionary with\n  feature keys mapping to their respective values and with a\n  <span>bpd</span> key mapping to the example's label.\n</p>\n<p>\n  Below is an example portion of the <span>RegressionTree.root.examples</span>:\n</p>\n<pre>\n[\n  {\n    \"porosity\": 0.24230826038076003,\n    \"gamma\": 1.5600463819136288,\n    \"sonic\": 2568.8231147730116,\n    \"density\": -0.353639698833012,\n    \"bpd\": 164.7544334411493, <span class=\"CodeEditor-promptComment\"># The label for this example.</span>\n  },\n  {\n    \"porosity\": 0.4821959432320581,\n    \"gamma\": 1.4953123610344377,\n    \"sonic\": 2768.866560695128,\n    \"density\": 1.1231264377284371,\n    \"bpd\": 157.33821193599536, <span class=\"CodeEditor-promptComment\"># The label for this example.</span>\n  },\n  {\n    \"porosity\": 0.058672948847231135,\n    \"gamma\": 1.5384704880812365,\n    \"sonic\": 3236.794545516582,\n    \"density\": 1.2698807135982118,\n    \"bpd\": 159.49129568528647, <span class=\"CodeEditor-promptComment\"># The label for this example.</span>\n  },\n  <span class=\"CodeEditor-promptComment\"># ...</span>\n  <span class=\"CodeEditor-promptComment\"># More examples.</span>\n]\n</pre>\n<p>Note that:</p>\n<ul>\n  <li>\n    You should use the mean squared error (MSE) as the splitting criteria.\n  </li>\n  <li>\n    You shouldn't evaluate <span>\"bpd\"</span> as a feature to split on, since\n    it's what you're trying to predict.\n  </li>\n  <li>You shouldn't use any hyperparameters like max depth.</li>\n  <li>There's no need to handle missing data or to scale the features.</li>\n  <li>Recursive and iterative implementations are both fine.</li>\n  <li>\n    You shouldn't use any libraries that implement regression trees for you,\n    such as scikit-learn.\n  </li>\n  <li>\n    Your output values will automatically be rounded to the fourth decimal.\n  </li>\n</ul>\n<p>\n  If you're unfamiliar with regression trees, we recommend watching the Decision\n  Trees video in the ML Crash Course on MLExpert before starting to code.\n</p>\n<h3>Sample Input</h3>\n<pre>\n<span class=\"CodeEditor-promptParameter\">features</span> = {\n  \"porosity\": 0.70,\n  \"gamma\": 1.57,\n  \"sonic\": 3666.90,\n  \"density\": 2.52\n}\n</pre>\n<h3>Sample Output</h3>\n<pre>\n143.0698 <span class=\"CodeEditor-promptComment\"># The regression tree prediction for the input's bpd.</span>\n</pre>\n</div>",
+    "hints": [
+        "<p>\n  We first need to train the regression tree. The root node is populated with\n  examples, which we need to split up and put into left and right\n  <span>TreeNode</span>s. This process can recursively continue to the leaf\n  nodes, at which point there should only be one example left in a node.\n</p>\n",
+        "\n<p>\n  Finding the best split of an example involves evaluating all of its feature\n  and split point values to see which split point produces the smallest MSE.\n  Each split point value to evaluate is the average of two adjacent feature\n  values when the feature values are sorted.\n</p>\n",
+        "\n<p>\n  After finding the split point that minimizes the MSE, an example in a node is\n  sent to the left child node if the relevant feature value is less than or\n  equal to the split point value. Otherwise, the example is sent to the right\n  child node.\n</p>\n",
+        "\n<p>\n  Finding a prediction means traversing down the regression tree while comparing\n  the relevant feature values of the input to each node's split point value.\n</p>\n",
+        "\n<p>\n  Upon reaching a leaf node in the regression tree, the prediction is just the\n  average of the labels in that leaf node.\n</p>"
+    ],
+    "spaceTime": "",
+    "notes": "",
+    "isSlowExecution": false,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "class TreeNode:\n    def __init__(self, examples):\n        self.examples = examples\n        self.left = None\n        self.right = None\n        self.split_point = None\n\n    def split(self):\n        # Write your code here.\n        pass\n\n\nclass RegressionTree:\n    def __init__(self, examples):\n        # Don't change the following two lines of code.\n        self.root = TreeNode(examples)\n        self.train()\n\n    def train(self):\n        # Don't edit this line.\n        self.root.split()\n\n    def predict(self, example):\n        # Write your code here.\n        return 0\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass TreeNode:\n    def __init__(self, examples):\n        self.examples = examples\n        self.left = None\n        self.right = None\n        self.split_point = None\n\n    def split(self):\n        if len(self.examples) == 1:\n            return\n\n        best_split_point = {\n            \"feature\": None,\n            \"value\": None,\n            \"mse\": float(\"inf\"),\n            \"split_index\": None,\n        }\n\n        for feature in self.examples[0].keys():\n            if feature == \"bpd\":\n                continue\n\n            self.examples.sort(key=lambda example: example[feature])\n\n            for i, _ in enumerate(self.examples[:-1]):\n                split_point_value = (self.examples[i][feature] + self.examples[i + 1][feature]) / 2\n                mse, split_index = self.get_split_point_mse(feature, split_point_value)\n                if best_split_point[\"mse\"] > mse:\n                    best_split_point = {\n                        \"feature\": feature,\n                        \"value\": split_point_value,\n                        \"mse\": mse,\n                        \"split_index\": split_index,\n                    }\n\n        self.split_point = best_split_point\n\n        self.examples.sort(key=lambda example: example[self.split_point[\"feature\"]])\n\n        self.left = TreeNode(self.examples[: self.split_point[\"split_index\"]])\n        self.left.split()\n\n        self.right = TreeNode(self.examples[self.split_point[\"split_index\"] :])\n        self.right.split()\n\n    def get_split_point_mse(self, feature, split_point_value):\n        left_split_labels = [example[\"bpd\"] for example in self.examples if example[feature] <= split_point_value]\n        right_split_labels = [example[\"bpd\"] for example in self.examples if example[feature] > split_point_value]\n\n        if not len(left_split_labels) or not len(right_split_labels):\n            return None, None\n\n        left_split_mse = get_mse(left_split_labels)\n        right_split_mse = get_mse(right_split_labels)\n        num_samples = len(left_split_labels) + len(right_split_labels)\n        mse = ((len(left_split_labels) * left_split_mse) + (len(right_split_labels) * right_split_mse)) / num_samples\n        split_index = len(left_split_labels)\n\n        return mse, split_index\n\n\ndef get_mse(values):\n    average = get_average(values)\n    return sum([(value - average) ** 2 for value in values]) / len(values)\n\n\ndef get_average(values):\n    return sum(values) / len(values)\n\n\nclass RegressionTree:\n    def __init__(self, examples):\n        # Don't change the following two lines of code.\n        self.root = TreeNode(examples)\n        self.train()\n\n    def train(self):\n        # Don't edit this line.\n        self.root.split()\n\n    def predict(self, example):\n        node = self.root\n\n        while node.left and node.right:\n            if example[node.split_point[\"feature\"]] <= node.split_point[\"value\"]:\n                node = node.left\n            else:\n                node = node.right\n\n        leaf_labels = [leaf_example[\"bpd\"] for leaf_example in node.examples]\n        return sum(leaf_labels) / len(leaf_labels)\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of some of\n# this question's test cases. Feel free to add, edit, or\n# remove test cases in this file as you see fit!\n\nimport program\nimport unittest\nimport pickle\nimport os\n\n_DATA_DIR = os.path.dirname(os.path.realpath(__file__)) + \"/data\"\nwith open(f\"{_DATA_DIR}/drilling.pickle\", \"rb\") as handle:\n    examples = pickle.load(handle)\nregression_tree = program.RegressionTree(examples)\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        features = {\"porosity\": 0.70, \"gamma\": 1.57, \"sonic\": 3666.90, \"density\": 2.52}\n        expected = 143.0698\n        actual = regression_tree.predict(features)\n        self.assertEqual(round_to_4(actual), expected)\n\n    def test_case_2(self):\n        features = {\n            \"porosity\": 0.5718721746302671,\n            \"gamma\": 1.372854959321451,\n            \"sonic\": 3538.467028856794,\n            \"density\": 1.6920987581448308,\n        }\n        expected = 197.8710\n        actual = regression_tree.predict(features)\n        self.assertEqual(round_to_4(actual), expected)\n\n    def test_case_3(self):\n        features = {\"porosity\": 0.1, \"gamma\": 1.2, \"sonic\": 3538, \"density\": 1.6}\n        expected = 187.8121\n        actual = regression_tree.predict(features)\n        self.assertEqual(round_to_4(actual), expected)\n\n    def test_case_4(self):\n        features = {\"porosity\": 0.4, \"gamma\": 1.9, \"sonic\": 2538, \"density\": 2.6}\n        expected = 389.3450\n        actual = regression_tree.predict(features)\n        self.assertEqual(round_to_4(actual), expected)\n\n    def test_case_5(self):\n        features = {\"porosity\": 0.65, \"gamma\": 1.7, \"sonic\": 4021, \"density\": 2.2}\n        expected = 139.7479\n        actual = regression_tree.predict(features)\n        self.assertEqual(round_to_4(actual), expected)\n\n    def test_case_6(self):\n        features = {\"porosity\": 0.82, \"gamma\": 2.1, \"sonic\": 1710, \"density\": 0.9}\n        expected = 816.9979\n        actual = regression_tree.predict(features)\n        self.assertEqual(round_to_4(actual), expected)\n\n\ndef round_to_4(number):\n    if not is_number(number):\n        # Bad output; let tests fail.\n        return number\n\n    return round(number, 4)\n\n\ndef is_number(element):\n    return type(element) in (int, float)\n",
+            "unitTests": "import program\nimport unittest\nimport pickle\nimport os\n\n_DATA_DIR = os.path.dirname(os.path.realpath(__file__)) + \"/data\"\nwith open(f\"{_DATA_DIR}/drilling.pickle\", \"rb\") as handle:\n    examples = pickle.load(handle)\nregression_tree = program.RegressionTree(examples)\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        features = {\"porosity\": 0.70, \"gamma\": 1.57, \"sonic\": 3666.90, \"density\": 2.52}\n        expected = 143.0698\n        actual = regression_tree.predict(features)\n        self.assertEqual(round_to_4(actual), expected)\n\n    def test_case_2(self):\n        features = {\n            \"porosity\": 0.5718721746302671,\n            \"gamma\": 1.372854959321451,\n            \"sonic\": 3538.467028856794,\n            \"density\": 1.6920987581448308,\n        }\n        expected = 197.8710\n        actual = regression_tree.predict(features)\n        self.assertEqual(round_to_4(actual), expected)\n\n    def test_case_3(self):\n        features = {\"porosity\": 0.1, \"gamma\": 1.2, \"sonic\": 3538, \"density\": 1.6}\n        expected = 187.8121\n        actual = regression_tree.predict(features)\n        self.assertEqual(round_to_4(actual), expected)\n\n    def test_case_4(self):\n        features = {\"porosity\": 0.4, \"gamma\": 1.9, \"sonic\": 2538, \"density\": 2.6}\n        expected = 389.3450\n        actual = regression_tree.predict(features)\n        self.assertEqual(round_to_4(actual), expected)\n\n    def test_case_5(self):\n        features = {\"porosity\": 0.65, \"gamma\": 1.7, \"sonic\": 4021, \"density\": 2.2}\n        expected = 139.7479\n        actual = regression_tree.predict(features)\n        self.assertEqual(round_to_4(actual), expected)\n\n    def test_case_6(self):\n        features = {\"porosity\": 0.82, \"gamma\": 2.1, \"sonic\": 1710, \"density\": 0.9}\n        expected = 816.9979\n        actual = regression_tree.predict(features)\n        self.assertEqual(round_to_4(actual), expected)\n\n\ndef round_to_4(number):\n    if not is_number(number):\n        # Bad output; let tests fail.\n        return number\n\n    return round(number, 4)\n\n\ndef is_number(element):\n    return type(element) in (int, float)\n"
+        }
+    },
+    "customInputVars": [
+        {
+            "name": "features",
+            "example": {
+                "density": 2.52,
+                "gamma": 1.57,
+                "porosity": 0.7,
+                "sonic": 3666.9
+            },
+            "schema": {
+                "properties": {
+                    "density": {
+                        "type": "number"
+                    },
+                    "gamma": {
+                        "type": "number"
+                    },
+                    "porosity": {
+                        "type": "number"
+                    },
+                    "sonic": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "porosity",
+                    "gamma",
+                    "sonic",
+                    "density"
+                ],
+                "type": "object"
+            }
+        }
+    ],
+    "tests": [
+        {
+            "features": {
+                "density": 2.52,
+                "gamma": 1.57,
+                "porosity": 0.7,
+                "sonic": 3666.9
+            }
+        },
+        {
+            "features": {
+                "density": 1.6920987581448308,
+                "gamma": 1.372854959321451,
+                "porosity": 0.5718721746302671,
+                "sonic": 3538.467028856794
+            }
+        },
+        {
+            "features": {
+                "density": 1.6,
+                "gamma": 1.2,
+                "porosity": 0.1,
+                "sonic": 3538
+            }
+        },
+        {
+            "features": {
+                "density": 2.6,
+                "gamma": 1.9,
+                "porosity": 0.4,
+                "sonic": 2538
+            }
+        },
+        {
+            "features": {
+                "density": 2.2,
+                "gamma": 1.7,
+                "porosity": 0.65,
+                "sonic": 4021
+            }
+        },
+        {
+            "features": {
+                "density": 0.9,
+                "gamma": 2.1,
+                "porosity": 0.82,
+                "sonic": 1710
+            }
+        }
+    ],
+    "jsonTests": [
+        {
+            "features": {
+                "density": 2.52,
+                "gamma": 1.57,
+                "porosity": 0.7,
+                "sonic": 3666.9
+            }
+        },
+        {
+            "features": {
+                "density": 1.6920987581448308,
+                "gamma": 1.372854959321451,
+                "porosity": 0.5718721746302671,
+                "sonic": 3538.467028856794
+            }
+        },
+        {
+            "features": {
+                "density": 1.6,
+                "gamma": 1.2,
+                "porosity": 0.1,
+                "sonic": 3538
+            }
+        },
+        {
+            "features": {
+                "density": 2.6,
+                "gamma": 1.9,
+                "porosity": 0.4,
+                "sonic": 2538
+            }
+        },
+        {
+            "features": {
+                "density": 2.2,
+                "gamma": 1.7,
+                "porosity": 0.65,
+                "sonic": 4021
+            }
+        },
+        {
+            "features": {
+                "density": 0.9,
+                "gamma": 2.1,
+                "porosity": 0.82,
+                "sonic": 1710
+            }
+        }
+    ],
+    "changelog": []
+}

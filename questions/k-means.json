@@ -1,0 +1,105 @@
+{
+    "uid": "k-means",
+    "testStrategy": "JSON",
+    "name": "K-means",
+    "version": 0,
+    "releaseDate": "2021-05-24T00:00:00Z",
+    "category": "Model Concepts",
+    "difficulty": 0,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "mlexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "python"
+    ],
+    "submissionStatistics": {
+        "correctCount": 979,
+        "failureCount": 370
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "552660159",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Ryan Doan",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 301
+    },
+    "prompt": "<div class=\"html\">\n<p>\n  Use the k-means algorithm to return the <span>k</span> means (or centroids)\n  for the provided user features.\n</p>\n<p>\n  These user features are the result of a dimensionality reduction by PCA on\n  some user-app interaction data. You'll have access to a\n  <span>USER_FEATURE_MAP</span> dictionary, mapping each user\n  <span>\"uid_i\"</span> to a respective list of 4 features associated with the\n  user in question.\n</p>\n<p>Below is an example portion of the <span>USER_FEATURE_MAP</span>:</p>\n<pre>\n{\n  \"uid_0\": [-1.479359467505669, -1.895497044385029, -2.0461402601759096, -1.7109256402185178],\n  \"uid_1\": [-1.8284426855307128, -1.714098142408679, -0.9893682669649455, -1.5766569391907947],\n  \"uid_2\": [-1.8398933218386004, -1.7896757009107565, -1.1370177175666063, -1.0218512556903283],\n  \"uid_3\": [-1.23224975874512, -1.8447858273094768, -1.8496517744301924, -2.4720755654344186],\n  \"uid_4\": [-1.7714737791268318, -1.2725603446513774, -1.5512094954034525, -1.2589442628984848],\n  <span class=\"CodeEditor-promptComment\"># ...</span>\n  <span class=\"CodeEditor-promptComment\"># More of the same kind of data.</span>\n}\n</pre>\n<p>Note that:</p>\n<ul>\n  <li>\n    The initial centroid locations are selected for you to ensure consistency\n    when verifying your solution.\n  </li>\n  <li>\n    You should execute at least 10 iterations of the k-means algorithm, not\n    including the initialization of the centroids.\n  </li>\n  <li>You should use the Manhattan distance as the distance metric.</li>\n  <li>You shouldn't use any libraries that implement k-means for you.</li>\n  <li>\n    Your output values will automatically be rounded to the fourth decimal.\n  </li>\n</ul>\n<p>\n  If you're unfamiliar with the k-means algorithm, we recommend watching the\n  k-means video in the ML Crash Course on MLExpert before starting to code.\n</p>\n<h3>Sample Input</h3>\n<pre>\n<span class=\"CodeEditor-promptParameter\">k</span> = 1\n</pre>\n<h3>Sample Output</h3>\n<pre>\n[[-1.066, -1.098, -1.067, -1.085]]\n<span class=\"CodeEditor-promptComment\"># The location of the 1 mean (centroid) in 4-dimensional space.</span>\n</pre>\n</div>",
+    "hints": [
+        "<p>\n  Start by creating <span>k</span> centroids based on the locations of the\n  provided users.\n</p>\n",
+        "\n<p>\n  After creating the centroids, find the nearest centroid for each point, and\n  assign each point to its nearest centroid.\n</p>\n",
+        "\n<p>\n  After finding each point's nearest centroid, update the location of each\n  centroid to be the average of each point assigned to it. Calculating the\n  average of n-dimensional data is the same as calculating the average of\n  one-dimensional data; you just handle each dimension separately.\n</p>\n",
+        "\n<p>\n  Repeat the entire process of updating the centroids at least 10 times to allow\n  for the centroids to converge on the means of the features.\n</p>"
+    ],
+    "spaceTime": "",
+    "notes": "",
+    "isSlowExecution": false,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "import random\n\n\nclass Centroid:\n    def __init__(self, location):\n        self.location = location\n        self.closest_users = set()\n\n\ndef get_k_means(user_feature_map, num_features_per_user, k):\n    # Don't change the following two lines of code.\n    random.seed(42)\n    # Gets the inital users, to be used as centroids.\n    inital_centroid_users = random.sample(sorted(list(user_feature_map.keys())), k)\n\n    # Write your code here.\n    pass\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport random\n\n\nclass Centroid:\n    def __init__(self, location):\n        self.location = location\n        self.closest_users = set()\n\n\ndef get_k_means(user_feature_map, num_features_per_user, k):\n    # Don't change the following two lines of code.\n    random.seed(42)\n    # Gets the inital users, to be used as centroids.\n    inital_centroid_users = random.sample(sorted(list(user_feature_map.keys())), k)\n\n    centroids = [Centroid(user_feature_map[inital_centroid_user]) for inital_centroid_user in inital_centroid_users]\n    for _ in range(10):\n        for uid, features in user_feature_map.items():\n            closest_centroid_distance = float(\"inf\")\n            closest_centroid = None\n            for centroid in centroids:\n                features_to_centroid_distance = get_manhattan_distance(features, centroid.location)\n                if features_to_centroid_distance < closest_centroid_distance:\n                    closest_centroid_distance = features_to_centroid_distance\n                    closest_centroid = centroid\n            closest_centroid.closest_users.add(uid)\n\n        for centroid in centroids:\n            centroid.location = get_centroid_average(centroid, user_feature_map, num_features_per_user)\n            centroid.closest_users.clear()\n    return [centroid.location for centroid in centroids]\n\n\ndef get_manhattan_distance(features, other_features):\n    absolute_differences = []\n    for i in range(len(features)):\n        absolute_differences.append(abs(features[i] - other_features[i]))\n    return sum(absolute_differences)\n\n\ndef get_centroid_average(centroid, user_feature_map, num_features_per_user):\n    centroid_average = [0] * num_features_per_user\n    for i in range(num_features_per_user):\n        for user in centroid.closest_users:\n            centroid_average[i] = centroid_average[i] + user_feature_map[user][i]\n    return [centroid_dimension / len(centroid.closest_users) for centroid_dimension in centroid_average]\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of some of\n# this question's test cases. Feel free to add, edit, or\n# remove test cases in this file as you see fit!\n\nimport program\nimport unittest\nimport numpy\nimport os\nimport pickle\n\n\n_DATA_DIR = os.path.dirname(os.path.realpath(__file__)) + \"/data\"\n\n\ndef get_feature_map():\n    with open(f\"{_DATA_DIR}/kmeans.pickle\", \"rb\") as handle:\n        return pickle.load(handle)\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        k = 1\n        actual = program.get_k_means(get_feature_map(), 4, k)\n        expected = [[-1.0659, -1.0981, -1.0667, -1.0846]]\n        self.assertEqual(round_output_values(actual), expected)\n\n    def test_case_2(self):\n        k = 2\n        actual = program.get_k_means(get_feature_map(), 4, k)\n        expected = [\n            [0.3109, 0.3282, 0.3325, 0.3437],\n            [-1.479, -1.526, -1.4864, -1.5131],\n        ]\n        self.assertEqual(round_output_values(actual), expected)\n\n    def test_case_3(self):\n        k = 3\n        actual = program.get_k_means(get_feature_map(), 4, k)\n        expected = [\n            [0.3109, 0.3282, 0.3325, 0.3437],\n            [-1.1271, -1.6013, -1.4669, -1.5284],\n            [-1.7739, -1.4629, -1.5028, -1.5004],\n        ]\n        self.assertEqual(round_output_values(actual), expected)\n\n    def test_case_4(self):\n        k = 4\n        actual = program.get_k_means(get_feature_map(), 4, k)\n        expected = [\n            [-1.2694, -1.5202, -1.1358, -1.5602],\n            [-1.2249, -1.6868, -1.8245, -1.3984],\n            [-1.8371, -1.4109, -1.5173, -1.5607],\n            [0.3109, 0.3282, 0.3325, 0.3437],\n        ]\n        self.assertEqual(round_output_values(actual), expected)\n\n    def test_case_5(self):\n        k = 5\n        actual = program.get_k_means(get_feature_map(), 4, k)\n        expected = [\n            [-1.1544, -1.4444, -1.1587, -1.6412],\n            [-1.251, -1.7981, -1.7665, -1.3378],\n            [-1.6647, -1.2963, -1.8271, -1.6676],\n            [0.3109, 0.3282, 0.3325, 0.3437],\n            [-1.8224, -1.5567, -1.1926, -1.4176],\n        ]\n        self.assertEqual(round_output_values(actual), expected)\n\n\ndef round_output_values(centroids):\n    if type(centroids) is not list:\n        # Bad output; let tests fail.\n        return centroids\n\n    return [[round_to_4(x) for x in centroid] for centroid in centroids]\n\n\ndef round_to_4(number):\n    if not is_number(number):\n        # Bad output; let tests fail.\n        return number\n\n    return round(number, 4)\n\n\ndef is_number(element):\n    return type(element) in (int, float, numpy.float64)\n",
+            "unitTests": "import program\nimport unittest\nimport numpy\nimport os\nimport pickle\n\n\n_DATA_DIR = os.path.dirname(os.path.realpath(__file__)) + \"/data\"\n\n\ndef get_feature_map():\n    with open(f\"{_DATA_DIR}/kmeans.pickle\", \"rb\") as handle:\n        return pickle.load(handle)\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        k = 1\n        actual = program.get_k_means(get_feature_map(), 4, k)\n        expected = [[-1.0659, -1.0981, -1.0667, -1.0846]]\n        self.assertEqual(round_output_values(actual), expected)\n\n    def test_case_2(self):\n        k = 2\n        actual = program.get_k_means(get_feature_map(), 4, k)\n        expected = [\n            [0.3109, 0.3282, 0.3325, 0.3437],\n            [-1.479, -1.526, -1.4864, -1.5131],\n        ]\n        self.assertEqual(round_output_values(actual), expected)\n\n    def test_case_3(self):\n        k = 3\n        actual = program.get_k_means(get_feature_map(), 4, k)\n        expected = [\n            [0.3109, 0.3282, 0.3325, 0.3437],\n            [-1.1271, -1.6013, -1.4669, -1.5284],\n            [-1.7739, -1.4629, -1.5028, -1.5004],\n        ]\n        self.assertEqual(round_output_values(actual), expected)\n\n    def test_case_4(self):\n        k = 4\n        actual = program.get_k_means(get_feature_map(), 4, k)\n        expected = [\n            [-1.2694, -1.5202, -1.1358, -1.5602],\n            [-1.2249, -1.6868, -1.8245, -1.3984],\n            [-1.8371, -1.4109, -1.5173, -1.5607],\n            [0.3109, 0.3282, 0.3325, 0.3437],\n        ]\n        self.assertEqual(round_output_values(actual), expected)\n\n    def test_case_5(self):\n        k = 5\n        actual = program.get_k_means(get_feature_map(), 4, k)\n        expected = [\n            [-1.1544, -1.4444, -1.1587, -1.6412],\n            [-1.251, -1.7981, -1.7665, -1.3378],\n            [-1.6647, -1.2963, -1.8271, -1.6676],\n            [0.3109, 0.3282, 0.3325, 0.3437],\n            [-1.8224, -1.5567, -1.1926, -1.4176],\n        ]\n        self.assertEqual(round_output_values(actual), expected)\n\n\ndef round_output_values(centroids):\n    if type(centroids) is not list:\n        # Bad output; let tests fail.\n        return centroids\n\n    return [[round_to_4(x) for x in centroid] for centroid in centroids]\n\n\ndef round_to_4(number):\n    if not is_number(number):\n        # Bad output; let tests fail.\n        return number\n\n    return round(number, 4)\n\n\ndef is_number(element):\n    return type(element) in (int, float, numpy.float64)\n"
+        }
+    },
+    "customInputVars": [
+        {
+            "name": "k",
+            "example": 1,
+            "schema": {
+                "minimum": 1,
+                "type": "integer"
+            }
+        }
+    ],
+    "tests": [
+        {
+            "k": 1
+        },
+        {
+            "k": 2
+        },
+        {
+            "k": 3
+        },
+        {
+            "k": 4
+        },
+        {
+            "k": 5
+        }
+    ],
+    "jsonTests": [
+        {
+            "k": 1
+        },
+        {
+            "k": 2
+        },
+        {
+            "k": 3
+        },
+        {
+            "k": 4
+        },
+        {
+            "k": 5
+        }
+    ],
+    "changelog": []
+}

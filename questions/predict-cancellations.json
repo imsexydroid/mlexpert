@@ -1,0 +1,65 @@
+{
+    "uid": "predict-cancellations",
+    "testStrategy": "DATA_PROCESSING",
+    "name": "Predict Cancellations",
+    "version": 0,
+    "releaseDate": "2021-05-24T00:00:00Z",
+    "category": "Model Applications",
+    "difficulty": 0,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "mlexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "python"
+    ],
+    "submissionStatistics": {
+        "correctCount": 505,
+        "failureCount": 89
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "552661784",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Ryan Doan",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 247
+    },
+    "prompt": "<div class=\"html\">\n<p>\n  Use the <span>LogisticRegression</span> library within PySpark to predict\n  subscription cancellations based on user features.\n</p>\n<p>\n  Return the prediction dataframe produced by the\n  <span>LogisticRegression</span> model. This dataframe will contain the\n  following columns: <span>rawPrediction</span>, which has the log-odds for each\n  example, <span>probability</span>, which has the probabilities for each\n  example, and <span>prediction</span>, which contains either a\n  <span>0</span> or <span>1</span>, depending on the probability and threshold\n  hyperparameter.\n</p>\n<p>\n  The prediction dataframe should be trained and predicted on the following\n  dataframe:\n</p>\n<pre>\n+--------+-----------------------+----------------------+---------------------+---------------------+\n| user_id|month_interaction_count|week_interaction_count|day_interaction_count|cancelled_within_week|\n+--------+-----------------------+----------------------+---------------------+---------------------+\n|66860ae6|                     41|                     9|                    0|                    1|\n|249803f8|                     25|                     9|                    2|                    0|\n|32ed74cc|                     21|                     2|                    1|                    1|\n|7ed76e6a|                     22|                     5|                    2|                    0|\n|46c81f43|                     32|                     8|                    2|                    0|\n|cf0f185e|                     26|                     4|                    0|                    1|\n|568275b3|                     29|                     5|                    1|                    1|\n|86a060ec|                     33|                     7|                    1|                    1|\n|c0c07290|                     35|                    10|                    0|                    0|\n|709dc1da|                     36|                    11|                    1|                    0|\n+--------+-----------------------+----------------------+---------------------+---------------------+\n</pre>\n<p>\n  The dataframe above, accessible as <span>user_interaction_df</span> in the\n  code, contains features for each <span>user_id</span>, including\n  <span>month_interaction_count</span>, <span>week_interaction_count</span>, and\n  <span>day_interaction_count</span>.\n</p>\n<p>\n  For each <span>user_id</span>, the binary label\n  <span>cancelled_within_week</span> is <span>1</span> if the user cancelled\n  their subscription within a week of the last recorded\n  <span>day_interaction_count</span> and <span>0</span>\n  otherwise.\n</p>\n<p>\n  The model hyperparameters include 10 iterations, a decision threshold of 0.6,\n  L1 regularization, and a regularization parameter of 0.1.\n</p>\n<p>\n  Feel free to browse the PySpark <span>LogisticRegression</span>\n  <a\n    class=\"Link Link--mle\"\n    href=\"https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.ml.classification.LogisticRegression.html\"\n    target=\"_blank\"\n    >documentation</a\n  >.\n</p>\n<h3>Sample Output Dataframe</h3>\n<pre>\n+--------+--------------+------------+----------+\n|user_id |rawPrediction |probability |prediction|\n+--------+--------------+------------+----------+\n|010b4076|         [x,x]|       [x,x]|       0.0|\n|31c73683|         [x,x]|       [x,x]|       0.0|\n|8173164f|         [x,x]|       [x,x]|       0.0|\n|f77ad2d3|         [x,x]|       [x,x]|       0.0|\n|25050522|         [x,x]|       [x,x]|       0.0|\n|bfb27c75|         [x,x]|       [x,x]|       0.0|\n|09663ea6|         [x,x]|       [x,x]|       1.0|\n|ca7aacf2|         [x,x]|       [x,x]|       0.0|\n|63f84e80|         [x,x]|       [x,x]|       0.0|\n|cbb81ed7|         [x,x]|       [x,x]|       0.0|\n+--------+--------------+------------+----------+\n</pre>\n</div>",
+    "hints": [
+        "<p>\n  First, we need to create a <span>\"features\"</span> column that groups the user\n  features together. We can do this by using a <span>VectorAssembler</span>.\n</p>\n",
+        "\n<p>\n  Then, we need to create a <span>\"label\"</span> column that contains all the\n  labels.\n</p>\n",
+        "\n<p>\n  Next, we'll create the model with the correct hyperparameters.\n  <span>LogisticRegression</span> uses <span>elasticNetParam</span> to indicate\n  L1, L2, or a combination of regularization strategies. Use an\n  <span>elasticNetParam</span> of 1 to specify L1 regularization. We need to\n  assign the decision threshold to 0.6 with the <span>threshold</span> argument.\n  We then need to specify <span>maxIter</span> as 10 to limit the number of\n  iterations of optimization for the model. Lastly, our regularization parameter\n  <span>regParam</span> will be assigned to 0.1.\n</p>\n",
+        "\n<p>\n  We then call <span>fit</span> on the <span>LogisticRegression</span> model.\n</p>\n",
+        "\n<p>\n  Finally, we call <span>transform</span> on the same dataframe we trained with\n  to get the predictions. This will evaluate the model's performance on the\n  training examples. Make sure to ultimately select the appropriate rows\n  specified in the question prompt.\n</p>"
+    ],
+    "spaceTime": "",
+    "notes": "",
+    "isSlowExecution": true,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": "dataframe"
+    },
+    "resources": {
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "def predict_cancellations(user_interaction_df):\n    # Write your code here.\n    pass\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nfrom pyspark.ml.classification import LogisticRegression\nfrom pyspark.ml.feature import VectorAssembler\n\n\ndef predict_cancellations(user_interaction_df):\n    assembler = VectorAssembler(\n        inputCols=[\"month_interaction_count\", \"week_interaction_count\", \"day_interaction_count\"], outputCol=\"features\"\n    )\n\n    features_df = assembler.transform(user_interaction_df)\n    features_df = features_df.withColumn(\"label\", features_df[\"cancelled_within_week\"])\n\n    lr_model = LogisticRegression(maxIter=10, threshold=0.6, elasticNetParam=1, regParam=0.1)\n    trained_lr_model = lr_model.fit(features_df)\n\n    predictions_df = trained_lr_model.transform(features_df)\n    predictions_df = predictions_df.select([\"user_id\", \"rawPrediction\", \"probability\", \"prediction\"])\n\n    return predictions_df\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of some of\n# this question's test cases. Feel free to add, edit, or\n# remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        pass\n",
+            "unitTests": "import program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        pass\n"
+        }
+    },
+    "customInputVars": [],
+    "tests": [],
+    "jsonTests": [],
+    "changelog": []
+}

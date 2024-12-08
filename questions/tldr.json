@@ -1,0 +1,65 @@
+{
+    "uid": "tldr",
+    "testStrategy": "DATA_PROCESSING",
+    "name": "TLDR",
+    "version": 0,
+    "releaseDate": "2023-04-08T00:00:00Z",
+    "category": "Model Applications",
+    "difficulty": 0,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "mlexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "python"
+    ],
+    "submissionStatistics": {
+        "correctCount": 177,
+        "failureCount": 20
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "810396712",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Ryan Doan",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 240
+    },
+    "prompt": "<div class=\"html\">\n<p>\n  You\u2019re the founding engineer of TLDR, a startup that publishes summarized book\n  chapters to a subscriber base. The startup\u2019s core product offering provides\n  users a daily newsletter containing a chapter summary of the user\u2019s chosen books.\n  Write a function which takes in text and returns an extractive summary.\n</p>\n<pre>\n<span class=\"CodeEditor-promptParameter\">text_to_summarize</span> =\n  \"\n    Those Who Are Resilient Stay In The Game Longer ...\n    ... I recall a passage my father often used when I was growing up in the 1990s ...\n    ... Nurture your dreams ... Angela Duckworth who writes in Grit ...\n  \"\n</pre>\n<h3>Sample Output</h3>\n<pre>\n  \"\n    Those Who Are Resilient Stay In The Game Longer ...\n    Angela Duckworth who writes in Grit ...\n  \"\n</pre>\n<p>\n  Use NLTK (https://www.nltk.org/) and scikit-learn\u2019s\n  <a\n    class=\"Link Link--mle\"\n    href=https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfVectorizer.html\"\n    target=\"_blank\"\n    >TfidfVectorizer</a\n  > to perform the extractive summarization.\n</p>\n<p>\n  Your summary will be evaluated using\n  <a\n    class=\"Link Link--mle\"\n    href=https://en.wikipedia.org/wiki/ROUGE_(metric)\"\n    target=\"_blank\"\n    >ROUGE</a\n  > or\u00a0Recall-Oriented Understudy for Gisting Evaluation. Specifically, ROUGE-L\n  f-score will be used as the primary metric when comparing the ground truth summary\n  to your summary. ROUGE-L measures the longest common subsequence (LCS) between two\n  reference texts. Longer shared subsequences indicate more similarity between the\n  two sequences. The precision and recall of ROUGE-L will be used to calculate the\n  final ROUGE-L f-score.\n</p>\n<p>\n  Your summary must:\n</p>\n<ul>\n  <li>Score a ROUGE-L f-score of greater than 60% when compared to the ground truth.</li>\n  <li>Be no longer than 50% of the document.</li>\n</ul>",
+    "hints": [
+        "<p>\n  First, we need to tokenize sentences out of the input text. We can use <span>sent_tokenize</span>\n  from the <span>nltk</span> library.\n</p>\n",
+        "\n<p>\n  Then, we need to use <span>TfidfVectorizer</span> on the tokenized sentences.\n  We should be sure to provide <span>stopwords</span> from <span>nltk.corpus</span>\n  to the vectorizer so that the vectorizer ignores stop words.\n</p>\n",
+        "\n<p>\n  After fitting and transforming the input text with <span>TfidfVectorizer</span>,\n  we need to then find the sentences with the maximum values of tf-idf. We can get\n  this by summing through the vecotorizer result. The higher the sentence tf-idf\n  sum, the more likely that sentence is to be included in the summary.\n</p>\n",
+        "\n<p>\n  Then, we need to identify a threshold of sentence tf-idf sums. This threshold\n  will be used to decide whether to include or exclude particular sentences from\n  the summary. The threshold should take on a value which enables the function to\n  meet both requirements of the summary: length and ROUGE score.\n</p>\n",
+        "\n<p>\n  Finally, we need to assemble and return the summary based on the sentences which have\n  a higher tf-idf sum than the threshold.\n</p>"
+    ],
+    "spaceTime": "",
+    "notes": "",
+    "isSlowExecution": true,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "from sklearn.feature_extraction.text import TfidfVectorizer\nimport numpy as np\nfrom nltk import sent_tokenize\nfrom nltk.corpus import stopwords\n\ndef tldr(text_to_summarize):\n    # Write your code here\n    pass\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nfrom sklearn.feature_extraction.text import TfidfVectorizer\nimport numpy as np\nfrom nltk import sent_tokenize\nfrom nltk.corpus import stopwords\n\ndef tldr(text_to_summarize):\n    sentence_tokens = np.array(sent_tokenize(text_to_summarize))\n    stop_word_set = set(stopwords.words(\"english\"))\n    tf_idf_vectorizer = TfidfVectorizer(stop_words=stop_word_set)\n    tf_idf = tf_idf_vectorizer.fit_transform(sentence_tokens)\n    sentence_tf_idf_sums_matrix = tf_idf.sum(axis=1)\n    sentence_tf_idf_sums_array = np.asarray(sentence_tf_idf_sums_matrix).squeeze()\n    selected_sentence_indicies = np.where(sentence_tf_idf_sums_array > 3)\n    summary_sentences = sentence_tokens[selected_sentence_indicies]\n    summary = ''.join(summary_sentences)\n    return summary\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of some of\n# this question's test cases. Feel free to add, edit, or\n# remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        pass\n",
+            "unitTests": "import program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        pass\n"
+        }
+    },
+    "customInputVars": [],
+    "tests": [],
+    "jsonTests": [],
+    "changelog": []
+}

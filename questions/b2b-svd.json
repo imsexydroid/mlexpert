@@ -1,0 +1,64 @@
+{
+    "uid": "b2b-svd",
+    "testStrategy": "DATA_PROCESSING",
+    "name": "B2B SVD",
+    "version": 0,
+    "releaseDate": "2023-04-08T00:00:00Z",
+    "category": "Model Applications",
+    "difficulty": 0,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "mlexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "python"
+    ],
+    "submissionStatistics": {
+        "correctCount": 138,
+        "failureCount": 14
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "810395672",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Ryan Doan",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 553
+    },
+    "prompt": "<div class=\"html\">\n<p>\n  Visa wants to incentivize small and medium businesses (SMBs) to apply for business\n  credit cards. A product manager within Visa decided to offer business rewards\n  for SMBs when they conduct transactions with partnered enterprises. Visa has a\n  transaction database which stores transaction information such as average transaction\n  amount and frequency of transactions between SMBs and enterprises. Using the\n  provided dataframes, provide the product manager the top 10 enterprises Visa should\n  partner with to entice SMBs to apply for Visa business credit cards.\n</p>\n<p>\n  You\u2019re given two Pandas dataframes. The first dataframe contains the number of monthly\n  transactions each SMB conducts with each respective enterprise. The rows represent each\n  SMB and the columns represent each enterprise. This is a sparse dataframe.\n</p>\n<pre>\n   +--------+-----+----+----+----+----+\n   | (index)|  TXT| HFC| CMI| CCL| HRB| ...\n   +--------+-----+----+----+----+----+\n   |      40|    3|   0|   5|   0|   0| ...\n   |      57|    0|   8|   6|   0|   0| ...\n   |      69|    0|   0|   0|   9|   0| ...\n   |      43|    0|   1|   0|   0|   1| ...\n   |      64|    4|   0|   0|   1|   4| ...\n  <span class=\"CodeEditor-promptComment\"># ...</span>\n  <span class=\"CodeEditor-promptComment\"># More of the same kind of data.</span>\n</pre>\n<p>\n  The second dataframe contains the average transaction amount each SMB conducts\n  with each respective enterprise. The rows represent each SMB and the columns\n  represent each enterprise. This is a sparse dataframe and only has values where\n  the above dataframe has non-zero values.\n</p>\n<pre>\n   +--------+--------+--------+--------+--------+--------+\n   | (index)|     TXT|     HFC|     CMI|     CCL|     HRB| ...\n   +--------+--------+--------+--------+--------+--------+\n   |      40|  342.84|       0|   56.82|       0|       0| ...\n   |      57|       0|   99.83|   14.82|       0|       0| ...\n   |      69|       0|       0|       0|  567.22|       0| ...\n   |      43|       0|  243.66|       0|       0|  144.89| ...\n   |      64|  781.72|       0|       0|  456.12|  982.23| ...\n  <span class=\"CodeEditor-promptComment\"># ...</span>\n  <span class=\"CodeEditor-promptComment\"># More of the same kind of data.</span>\n</pre>\n<p>\n  Use these two dataframes to derive a new dataframe that contains the average total\n  monthly transaction amount. This resultant dataframe will be used on scikit-learn\u2019s\n  <a\n    class=\"Link Link--mle\"\n    href=https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.TruncatedSVD.html\"\n    target=\"_blank\"\n    >TruncatedSVD</a\n  >. The output of the TruncatedSVD will be an embedding for each enterprise. The top 10\n  enterprises for Visa to partner with will have the maximum embedding values.\n</p>\n<p>\n  The list of the top 10 enterprises that you return will be evaluated against the ground truth\n  set using the Jaccard similarity. The Jaccard similarity between your answer and\n  the ground truth must be greater than 66%.\n</p>\n<h3>Sample Output</h3>\n<pre>\n['TXT', 'HFC', 'CMI', ... 'HRB']\n</pre>",
+    "hints": [
+        "<p>\n  First, we need to derive the average monthly total enterprise transactions for\n  each SMB. We can do this by element-wise multiplying <span>avg_trxn_amount</span>\n  by <span>num_monthly_trxn</span>.\n</p>\n",
+        "\n<p>\n  Then, we need to use <span>TruncatedSVD</span> on the transposed resultant dataframe\n  from the previous hint. This will produce the enterprise embeddings. Only 10 components\n  should be used when defining the embedding size because we want the top 10 enterprises\n  to partner with.\n</p>\n",
+        "\n<p>\n  After fitting the <span>TruncatedSVD</span> to the enterprises, we need to determine\n  the indices with the highest embedding values. We can accomplish this by using\n  <span>argmax(axis=0)</span>. These indices will allow us to get the top 10 enterprises.\n</p>\n",
+        "\n<p>\n  Lastly, we need to map the top 10 enterprise embedding values to the actual ticker\n  of the enterprise. These ticker values are what will be returned from the function.\n  We can accomplish this by using <span>iloc</span> on the transposed dataframes of\n  either <span>avg_trxn_amount</span> or <span>num_monthly_trxn</span>.\n</p>"
+    ],
+    "spaceTime": "",
+    "notes": "",
+    "isSlowExecution": true,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "from sklearn.decomposition import TruncatedSVD\n\ndef b2b_svd(avg_trxn_amount, num_monthly_trxn):\n    # Write your code here\n    pass\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nfrom sklearn.decomposition import TruncatedSVD\n\ndef b2b_svd(avg_trxn_amount, num_monthly_trxn):\n    average_monthly_total = avg_trxn_amount.mul(num_monthly_trxn)\n    average_monthly_total_T = average_monthly_total.T\n    enterprise_svd = TruncatedSVD(n_components=10, n_iter=10)\n    enterprise_embeddings = enterprise_svd.fit_transform(average_monthly_total_T)\n    max_enterprise_embeddings = enterprise_embeddings.argmax(axis=0)\n    max_enterprise_rows = average_monthly_total_T.iloc[max_enterprise_embeddings]\n    return list(max_enterprise_rows.index.values)\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of some of\n# this question's test cases. Feel free to add, edit, or\n# remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        pass\n",
+            "unitTests": "import program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        pass\n"
+        }
+    },
+    "customInputVars": [],
+    "tests": [],
+    "jsonTests": [],
+    "changelog": []
+}

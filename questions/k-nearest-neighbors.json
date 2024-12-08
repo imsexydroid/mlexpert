@@ -1,0 +1,321 @@
+{
+    "uid": "k-nearest-neighbors",
+    "testStrategy": "JSON",
+    "name": "K Nearest Neighbors",
+    "version": 0,
+    "releaseDate": "2021-05-24T00:00:00Z",
+    "category": "Model Concepts",
+    "difficulty": 0,
+    "acl": {
+        "isFree": true,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "mlexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "python"
+    ],
+    "submissionStatistics": {
+        "correctCount": 1769,
+        "failureCount": 979
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "554608524",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Ryan Doan",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 303
+    },
+    "prompt": "<div class=\"html\">\n<p>\n  Use the k-nearest neighbors algorithm to return the <span>k</span> nearest\n  neighbors of the provided features.\n</p>\n<p>\n  These features are the result of a dimensionality reduction by PCA on some\n  operating-system data related to processes and their intrusivity in some\n  network. You'll have access to an <span>EXAMPLES</span> dictionary, mapping\n  each process identifier <span>\"pid_i\"</span> to a respective dictionary\n  containing its associated features as well as a label representing whether the\n  relevant process was intrusive to the network. A label of <span>0</span> means\n  that it wasn't intrusive, while a label of <span>1</span> means that it was\n  intrusive.\n</p>\n<p>Below is an example portion of the <span>EXAMPLES</span>:</p>\n<pre>\n{\n  \"pid_0\": {\n    \"features\": [3.968642003034218, 3.9553899901567955, 3.8067717105202794, <span class=\"CodeEditor-promptComment\"># ... more words</span>],\n    \"is_intrusive\": 0,\n  }, \n  \"pid_1\": {\n    \"features\": [3.905930716908446, 3.9843869514613046, 3.999386668299634, <span class=\"CodeEditor-promptComment\"># ... more words</span>],\n    \"is_intrusive\": 0,\n  }, \n  <span class=\"CodeEditor-promptComment\"># ...</span>\n  <span class=\"CodeEditor-promptComment\"># More of the same kind of data.</span>\n  \"pid_500\": {\n    \"features\": [4.309361217767318, 4.287392829732823, 4.296809382863873, <span class=\"CodeEditor-promptComment\"># ... more words</span>],\n    \"is_intrusive\": 1,\n  },\n  \"pid_501\": {\n    \"features\": [4.310938448487633, 4.298506635010131, 4.256964230013101, <span class=\"CodeEditor-promptComment\"># ... more words</span>],\n    \"is_intrusive\": 1,\n  },\n  <span class=\"CodeEditor-promptComment\"># ...</span>\n  <span class=\"CodeEditor-promptComment\"># More of the same kind of data.</span>\n}\n</pre>\n<p>Note that:</p>\n<ul>\n  <li>\n    You should use the Euclidean distance as the distance metric when finding\n    the k-nearest-neighbors.\n  </li>\n  <li>You shouldn't use any libraries that implement KNN for you.</li>\n</ul>\n<p>\n  If you're unfamiliar with the k-nearest neighbors algorithm, we recommend\n  watching the K Nearest Neighbors video in the ML Crash Course on MLExpert\n  before starting to code.\n</p>\n<h3>Sample Input</h3>\n<pre>\n<span class=\"CodeEditor-promptComment\"># For the `find_k_nearest_neighbors` function.</span>\n<span class=\"CodeEditor-promptParameter\">features</span> = [4.30936122, 4.28739283, 4.29680938, 4.33571647, 4.28774593]\n<span class=\"CodeEditor-promptParameter\">k</span> = 1\n</pre>\n<h3>Sample Output</h3>\n<pre>\n[\"pid_535\"]\n<span class=\"CodeEditor-promptComment\"># The closest neighbor to the input features.</span>\n<span class=\"CodeEditor-promptComment\"># Only 1 neighbor is returned since k = 1.</span>\n</pre>\n<h3>Sample Input</h3>\n<pre>\n<span class=\"CodeEditor-promptComment\"># For the `predict_label` function.</span>\n<span class=\"CodeEditor-promptParameter\">features</span> = [4.30936122, 4.28739283, 4.29680938, 4.33571647, 4.28774593]\n<span class=\"CodeEditor-promptParameter\">k</span> = 1\n</pre>\n<h3>Sample Output</h3>\n<pre>\n1\n<span class=\"CodeEditor-promptComment\"># The predicted label of the input features based on the closest neighbor.</span>\n</pre>\n</div>",
+    "hints": [
+        "<p>\n  To implement <span>find_k_nearest_neighbors</span>, we need to iterate through\n  all the features in our data set and find the distances between each feature\n  and each of the features provided to <span>find_k_nearest_neighbors</span>.\n</p>\n",
+        "\n<p>\n  By distance, we mean Euclidean distance. To find the Euclidean distance\n  between two features, we start by iterating through each element in both\n  features, subtracting one value from the other, and squaring that result. We\n  now have a list of squared differences, one for each item in the features. We\n  can get the Euclidean distance by summing each element in the list and taking\n  the square root.\n</p>\n",
+        "\n<p>\n  After we have the Euclidean distances between each feature in our data set and\n  each of the provided features, we can sort these distances and take the top k\n  elements so as to obtain the k-nearest neighbors.\n</p>\n",
+        "\n<p>\n  We can now use <span>find_k_nearest_neighbors</span> to implement\n  <span>predict_label</span>. We only need to get the labels of the k nearest\n  neighbors and return the most popular one among them; this is the prediction.\n</p>"
+    ],
+    "spaceTime": "",
+    "notes": "",
+    "isSlowExecution": false,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "# Should use the `find_k_nearest_neighbors` function below.\ndef predict_label(examples, features, k, label_key=\"is_intrusive\"):\n    # Write your code here.\n    pass\n\n\ndef find_k_nearest_neighbors(examples, features, k):\n    # Write your code here.\n    pass\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport math\n\n\n# Should use the `find_k_nearest_neighbors` function below.\ndef predict_label(examples, features, k, label_key=\"is_intrusive\"):\n    k_nearest_neighbors = find_k_nearest_neighbors(examples, features, k)\n    k_nearest_neighbors_labels = [examples[pid][label_key] for pid in k_nearest_neighbors]\n    return round(sum(k_nearest_neighbors_labels) / k)\n\n\ndef find_k_nearest_neighbors(examples, features, k):\n    distances = {}\n    for pid, features_label_map in examples.items():\n        distance = get_euclidean_distance(features, features_label_map[\"features\"])\n        distances[pid] = distance\n    return sorted(distances, key=distances.get)[:k]\n\n\ndef get_euclidean_distance(features, other_features):\n    squared_differences = []\n    for i in range(len(features)):\n        squared_differences.append((other_features[i] - features[i]) ** 2)\n    return math.sqrt(sum(squared_differences))\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of some of\n# this question's test cases. Feel free to add, edit, or\n# remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\nimport os\nimport pickle\n\n_DATA_DIR = os.path.dirname(os.path.realpath(__file__)) + \"/data\"\n\n\ndef get_knn_examples():\n    with open(f\"{_DATA_DIR}/knn.pickle\", \"rb\") as handle:\n        return pickle.load(handle)\n\n\nEXAMPLES = get_knn_examples()\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        features = [4.30936122, 4.28739283, 4.29680938, 4.33571647, 4.28774593]\n        k = 1\n        expected = [\"pid_500\"]\n        actual = program.find_k_nearest_neighbors(EXAMPLES, features, k)\n        self.assertEqual(sorted(actual), sorted(expected))\n\n    def test_case_2(self):\n        features = [4.30936122, 4.28739283, 4.29680938, 4.33571647, 4.28774593]\n        k = 1\n        expected = 1\n        actual = program.predict_label(EXAMPLES, features, k)\n        self.assertEqual(actual, expected)\n\n    def test_case_3(self):\n        features = [4.30936122, 4.28739283, 4.29680938, 4.33571647, 4.28774593]\n        k = 3\n        expected = [\"pid_500\", \"pid_535\", \"pid_545\"]\n        actual = program.find_k_nearest_neighbors(EXAMPLES, features, k)\n        self.assertEqual(sorted(actual), sorted(expected))\n\n    def test_case_4(self):\n        features = [4.30936122, 4.28739283, 4.29680938, 4.33571647, 4.28774593]\n        k = 3\n        expected = 1\n        actual = program.predict_label(EXAMPLES, features, k)\n        self.assertEqual(actual, expected)\n\n    def test_case_5(self):\n        features = [4.30936122, 4.28739283, 4.29680938, 4.33571647, 4.28774593]\n        k = 5\n        expected = [\"pid_500\", \"pid_535\", \"pid_545\", \"pid_512\", \"pid_516\"]\n        actual = program.find_k_nearest_neighbors(EXAMPLES, features, k)\n        self.assertEqual(sorted(actual), sorted(expected))\n\n    def test_case_6(self):\n        features = [4.30936122, 4.28739283, 4.29680938, 4.33571647, 4.28774593]\n        k = 5\n        expected = 1\n        actual = program.predict_label(EXAMPLES, features, k)\n        self.assertEqual(actual, expected)\n\n    def test_case_7(self):\n        features = [4.30936122, 4.28739283, 4.29680938, 4.33571647, 4.28774593]\n        k = 7\n        expected = [\"pid_500\", \"pid_535\", \"pid_545\", \"pid_512\", \"pid_516\", \"pid_513\", \"pid_537\"]\n        actual = program.find_k_nearest_neighbors(EXAMPLES, features, k)\n        self.assertEqual(sorted(actual), sorted(expected))\n\n    def test_case_8(self):\n        features = [4.30936122, 4.28739283, 4.29680938, 4.33571647, 4.28774593]\n        k = 7\n        expected = 1\n        actual = program.predict_label(EXAMPLES, features, k)\n        self.assertEqual(actual, expected)\n\n    def test_case_9(self):\n        features = [4.30936122, 4.28739283, 4.29680938, 4.33571647, 4.28774593]\n        k = 9\n        expected = [\"pid_500\", \"pid_535\", \"pid_545\", \"pid_512\", \"pid_516\", \"pid_513\", \"pid_537\", \"pid_540\", \"pid_528\"]\n        actual = program.find_k_nearest_neighbors(EXAMPLES, features, k)\n        self.assertEqual(sorted(actual), sorted(expected))\n\n    def test_case_10(self):\n        features = [4.30936122, 4.28739283, 4.29680938, 4.33571647, 4.28774593]\n        k = 9\n        expected = 0\n        actual = program.predict_label(EXAMPLES, features, k)\n        self.assertEqual(actual, expected)\n",
+            "unitTests": "import program\nimport unittest\n\nimport os\nimport pickle\n\n_DATA_DIR = os.path.dirname(os.path.realpath(__file__)) + \"/data\"\n\n\ndef get_knn_examples():\n    with open(f\"{_DATA_DIR}/knn.pickle\", \"rb\") as handle:\n        return pickle.load(handle)\n\n\nEXAMPLES = get_knn_examples()\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        features = [4.30936122, 4.28739283, 4.29680938, 4.33571647, 4.28774593]\n        k = 1\n        expected = [\"pid_500\"]\n        actual = program.find_k_nearest_neighbors(EXAMPLES, features, k)\n        self.assertEqual(sorted(actual), sorted(expected))\n\n    def test_case_2(self):\n        features = [4.30936122, 4.28739283, 4.29680938, 4.33571647, 4.28774593]\n        k = 1\n        expected = 1\n        actual = program.predict_label(EXAMPLES, features, k)\n        self.assertEqual(actual, expected)\n\n    def test_case_3(self):\n        features = [4.30936122, 4.28739283, 4.29680938, 4.33571647, 4.28774593]\n        k = 3\n        expected = [\"pid_500\", \"pid_535\", \"pid_545\"]\n        actual = program.find_k_nearest_neighbors(EXAMPLES, features, k)\n        self.assertEqual(sorted(actual), sorted(expected))\n\n    def test_case_4(self):\n        features = [4.30936122, 4.28739283, 4.29680938, 4.33571647, 4.28774593]\n        k = 3\n        expected = 1\n        actual = program.predict_label(EXAMPLES, features, k)\n        self.assertEqual(actual, expected)\n\n    def test_case_5(self):\n        features = [4.30936122, 4.28739283, 4.29680938, 4.33571647, 4.28774593]\n        k = 5\n        expected = [\"pid_500\", \"pid_535\", \"pid_545\", \"pid_512\", \"pid_516\"]\n        actual = program.find_k_nearest_neighbors(EXAMPLES, features, k)\n        self.assertEqual(sorted(actual), sorted(expected))\n\n    def test_case_6(self):\n        features = [4.30936122, 4.28739283, 4.29680938, 4.33571647, 4.28774593]\n        k = 5\n        expected = 1\n        actual = program.predict_label(EXAMPLES, features, k)\n        self.assertEqual(actual, expected)\n\n    def test_case_7(self):\n        features = [4.30936122, 4.28739283, 4.29680938, 4.33571647, 4.28774593]\n        k = 7\n        expected = [\"pid_500\", \"pid_535\", \"pid_545\", \"pid_512\", \"pid_516\", \"pid_513\", \"pid_537\"]\n        actual = program.find_k_nearest_neighbors(EXAMPLES, features, k)\n        self.assertEqual(sorted(actual), sorted(expected))\n\n    def test_case_8(self):\n        features = [4.30936122, 4.28739283, 4.29680938, 4.33571647, 4.28774593]\n        k = 7\n        expected = 1\n        actual = program.predict_label(EXAMPLES, features, k)\n        self.assertEqual(actual, expected)\n\n    def test_case_9(self):\n        features = [4.30936122, 4.28739283, 4.29680938, 4.33571647, 4.28774593]\n        k = 9\n        expected = [\"pid_500\", \"pid_535\", \"pid_545\", \"pid_512\", \"pid_516\", \"pid_513\", \"pid_537\", \"pid_540\", \"pid_528\"]\n        actual = program.find_k_nearest_neighbors(EXAMPLES, features, k)\n        self.assertEqual(sorted(actual), sorted(expected))\n\n    def test_case_10(self):\n        features = [4.30936122, 4.28739283, 4.29680938, 4.33571647, 4.28774593]\n        k = 9\n        expected = 0\n        actual = program.predict_label(EXAMPLES, features, k)\n        self.assertEqual(actual, expected)\n"
+        }
+    },
+    "customInputVars": [
+        {
+            "name": "method",
+            "example": "find_k_nearest_neighbors",
+            "schema": {
+                "enum": [
+                    "find_k_nearest_neighbors",
+                    "predict_label"
+                ],
+                "type": "string"
+            }
+        },
+        {
+            "name": "features",
+            "example": [
+                4.30936122,
+                4.28739283,
+                4.29680938,
+                4.33571647,
+                4.28774593
+            ],
+            "schema": {
+                "items": {
+                    "type": "number"
+                },
+                "type": "array"
+            }
+        },
+        {
+            "name": "k",
+            "example": 1,
+            "schema": {
+                "type": "integer"
+            }
+        }
+    ],
+    "tests": [
+        {
+            "features": [
+                4.30936122,
+                4.28739283,
+                4.29680938,
+                4.33571647,
+                4.28774593
+            ],
+            "k": 1,
+            "method": "find_k_nearest_neighbors"
+        },
+        {
+            "features": [
+                4.30936122,
+                4.28739283,
+                4.29680938,
+                4.33571647,
+                4.28774593
+            ],
+            "k": 1,
+            "method": "predict_label"
+        },
+        {
+            "features": [
+                4.30936122,
+                4.28739283,
+                4.29680938,
+                4.33571647,
+                4.28774593
+            ],
+            "k": 3,
+            "method": "find_k_nearest_neighbors"
+        },
+        {
+            "features": [
+                4.30936122,
+                4.28739283,
+                4.29680938,
+                4.33571647,
+                4.28774593
+            ],
+            "k": 3,
+            "method": "predict_label"
+        },
+        {
+            "features": [
+                4.30936122,
+                4.28739283,
+                4.29680938,
+                4.33571647,
+                4.28774593
+            ],
+            "k": 5,
+            "method": "find_k_nearest_neighbors"
+        },
+        {
+            "features": [
+                4.30936122,
+                4.28739283,
+                4.29680938,
+                4.33571647,
+                4.28774593
+            ],
+            "k": 5,
+            "method": "predict_label"
+        },
+        {
+            "features": [
+                4.30936122,
+                4.28739283,
+                4.29680938,
+                4.33571647,
+                4.28774593
+            ],
+            "k": 7,
+            "method": "find_k_nearest_neighbors"
+        },
+        {
+            "features": [
+                4.30936122,
+                4.28739283,
+                4.29680938,
+                4.33571647,
+                4.28774593
+            ],
+            "k": 7,
+            "method": "predict_label"
+        },
+        {
+            "features": [
+                4.30936122,
+                4.28739283,
+                4.29680938,
+                4.33571647,
+                4.28774593
+            ],
+            "k": 9,
+            "method": "find_k_nearest_neighbors"
+        },
+        {
+            "features": [
+                4.30936122,
+                4.28739283,
+                4.29680938,
+                4.33571647,
+                4.28774593
+            ],
+            "k": 9,
+            "method": "predict_label"
+        }
+    ],
+    "jsonTests": [
+        {
+            "features": [
+                4.30936122,
+                4.28739283,
+                4.29680938,
+                4.33571647,
+                4.28774593
+            ],
+            "k": 1,
+            "method": "find_k_nearest_neighbors"
+        },
+        {
+            "features": [
+                4.30936122,
+                4.28739283,
+                4.29680938,
+                4.33571647,
+                4.28774593
+            ],
+            "k": 1,
+            "method": "predict_label"
+        },
+        {
+            "features": [
+                4.30936122,
+                4.28739283,
+                4.29680938,
+                4.33571647,
+                4.28774593
+            ],
+            "k": 3,
+            "method": "find_k_nearest_neighbors"
+        },
+        {
+            "features": [
+                4.30936122,
+                4.28739283,
+                4.29680938,
+                4.33571647,
+                4.28774593
+            ],
+            "k": 3,
+            "method": "predict_label"
+        },
+        {
+            "features": [
+                4.30936122,
+                4.28739283,
+                4.29680938,
+                4.33571647,
+                4.28774593
+            ],
+            "k": 5,
+            "method": "find_k_nearest_neighbors"
+        },
+        {
+            "features": [
+                4.30936122,
+                4.28739283,
+                4.29680938,
+                4.33571647,
+                4.28774593
+            ],
+            "k": 5,
+            "method": "predict_label"
+        },
+        {
+            "features": [
+                4.30936122,
+                4.28739283,
+                4.29680938,
+                4.33571647,
+                4.28774593
+            ],
+            "k": 7,
+            "method": "find_k_nearest_neighbors"
+        },
+        {
+            "features": [
+                4.30936122,
+                4.28739283,
+                4.29680938,
+                4.33571647,
+                4.28774593
+            ],
+            "k": 7,
+            "method": "predict_label"
+        },
+        {
+            "features": [
+                4.30936122,
+                4.28739283,
+                4.29680938,
+                4.33571647,
+                4.28774593
+            ],
+            "k": 9,
+            "method": "find_k_nearest_neighbors"
+        },
+        {
+            "features": [
+                4.30936122,
+                4.28739283,
+                4.29680938,
+                4.33571647,
+                4.28774593
+            ],
+            "k": 9,
+            "method": "predict_label"
+        }
+    ],
+    "changelog": []
+}

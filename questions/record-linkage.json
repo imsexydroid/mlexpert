@@ -1,0 +1,64 @@
+{
+    "uid": "record-linkage",
+    "testStrategy": "DATA_PROCESSING",
+    "name": "Record Linkage",
+    "version": 0,
+    "releaseDate": "2023-04-08T00:00:00Z",
+    "category": "Data Processing",
+    "difficulty": 0,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "mlexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "python"
+    ],
+    "submissionStatistics": {
+        "correctCount": 114,
+        "failureCount": 37
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "810396307",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Ryan Doan",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 278
+    },
+    "prompt": "<div class=\"html\">\n<p>\n  As a data analyst for a mergers and acquisitions firm, your services have been\n  requested in a potential buyout of Spotify by YouTube. Stakeholders at YouTube Music\n  would like a list of existing Spotify premium users who already have YouTube Music\n  premium. This will help establish a fairer acquisition price.\n</p>\n<p>Consider the following dataframe provided by YouTube:</p>\n<pre>\n+----+--------------+-------------+----------------------------------+--------------------+--------------------+--------------------------------------+\n|    | first_name   | last_name   | preferred_contact                |   last_four_digits |   billing_zip_code | non_mfa_ip_addresses                 |\n|----+--------------+-------------+----------------------------------+--------------------+--------------------+--------------------------------------|\n|  0 | Sutton       | Duke        | sutt-duke@progressenergyinc.info |               7868 |              14661 | ['57.44.245.252', '227.226.40.165']  |\n|  1 | Zisel        | Bolding     | zi-bo@acusage.net                |               2770 |              42080 | ['26.134.133.30', '129.5.121.157']   |\n|  2 | Mac          | Saulsberry  | masaulsber@acusage.net           |               8724 |              18555 | ['142.195.32.205', '133.9.249.53']   |\n|  3 | Sonny        | Werth       | sonn.wer@diaperstack.com         |               4787 |              73432 | ['60.212.20.208', '134.151.216.140'] |\n|  4 | Amir         | Grondin     | am.gro@arketmay.com              |               3360 |              75736 | ['98.86.27.1', '15.186.111.73']      |\n<span class=\"CodeEditor-promptComment\"># ...</span>\n<span class=\"CodeEditor-promptComment\"># More of the same kind of data.</span>\n</pre>\n<p>\n  It represents information about each premium YouTube subscription owner and\n  is referenced as <span>df_youtube</span>.\n</p>\n<p>Consider the other dataframe provided by Spotify:</p>\n<pre>\n+----+--------------+-------------+---------------------------------+--------------------+--------------------+-------------------------------------+\n|    | first_name   | last_name   | preferred_contact               |   last_four_digits |   billing_zip_code | non_mfa_ip_addresses                |\n|----+--------------+-------------+---------------------------------+--------------------+--------------------+-------------------------------------|\n|  0 | Judd         | Catlin      | jucatli@diaperstack.com         |               1155 |              33162 | ['230.5.51.135', '158.201.151.245'] |\n|  1 | Gerlinde     | Francis     | gerlindefr@arvinmeritor.info    |               2577 |              97632 | ['6.195.240.222', '64.233.118.244'] |\n|  2 | Laris        | Pires       | lari-pir@progressenergyinc.info |               9125 |              79598 | ['9.169.26.141', '29.148.241.26']   |\n|  3 | Damiana      | Orme        | damiaorme@arvinmeritor.info     |               8380 |              55324 | ['140.57.106.48', '45.210.102.173'] |\n|  4 | Wayde        | Dang        | wayd-dang@acusage.net           |               3719 |              21462 | ['243.102.133.47', '250.95.189.48'] |\n<span class=\"CodeEditor-promptComment\"># ...</span>\n<span class=\"CodeEditor-promptComment\"># More of the same kind of data.</span>\n</pre>\n<p>\n  It represents information about each premium Spotify subscription owner and\n  is referenced as <span>df_spotify</span>.\n</p>\n<p>\n  Find and return the YouTube Pandas dataframe with only the entires of overlapping subscribers to\n  both YouTube premium and Spotify premium. Overlap is defined as:\n</p>\n<ul>\n  <li>Match on preferred contact</li>\n  <li>Match on first and last name, last 4 digits of the payment instrument, and the billing zip code</li>\n  <li>Match on first and last name, billing zip code, and the first 3 octets of any non-mfa IP addresses</li>\n</ul>\n</div>",
+    "hints": [
+        "<p>\n  First, we need to find the indices of matching preferred contacts of the two dataframes.\n</p>\n",
+        "\n<p>\n  Then, we need to find the intersection of the indices with matching first and\n  last name, last 4 digits of the payment instrument, and the billing zip code.\n</p>\n",
+        "\n<p>\n  Next, we need to find the intersection of the indices with matching first and\n  last name, billing zip code, and the first 3 octets of any non-mfa IP addresses.\n</p>\n",
+        "\n<p>\n  Lastly, we need to create and return a dataframe that contains the union of the\n  indices from all the previous hints within the <span>df_youtube</span>.\n</p>"
+    ],
+    "spaceTime": "",
+    "notes": "",
+    "isSlowExecution": true,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "import numpy as np\n\n\ndef link_records(df_youtube, df_spotify):\n    # Write your code here.\n    pass\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport numpy as np\n\n\ndef link_records(df_youtube, df_spotify):\n    matched_emails = np.argwhere(np.isin(df_spotify.preferred_contact, df_youtube.preferred_contact)).ravel()\n\n    df_youtube['owner'] = (df_youtube['first_name'] + ' ' + df_youtube['last_name']).str.lower()\n    df_spotify['owner'] = (df_spotify['first_name'] + ' ' + df_spotify['last_name']).str.lower()\n    matched_name = np.argwhere(np.isin(df_spotify.owner, df_youtube.owner))\n    matched_zip = np.argwhere(np.isin(df_spotify.billing_zip_code, df_youtube.billing_zip_code))\n    matched_name_and_zip = np.intersect1d(matched_name, matched_zip)\n    matched_last_four = np.argwhere(np.isin(df_spotify.last_four_digits, df_youtube.last_four_digits))\n    matched_name_and_zip_and_last_four = np.intersect1d(matched_last_four, matched_name_and_zip)\n\n    df_spotify['first_three_octets_ip'] =  df_spotify['non_mfa_ip_addresses'].map(\n                                                  lambda x:[''.join(i.split('.')[:-1]) for i in x])\n    df_youtube['first_three_octets_ip'] =  df_youtube['non_mfa_ip_addresses'].map(\n                                                  lambda x:[''.join(i.split('.')[:-1]) for i in x])\n    fuzzy_matched_ip = np.argwhere(np.any(np.isin([i for i in df_spotify.first_three_octets_ip],\n                                                  [j for j in df_youtube.first_three_octets_ip]), axis=1))\n    matched_name_and_zip_and_ip = np.intersect1d(fuzzy_matched_ip, matched_name_and_zip)\n\n    all_matches = np.union1d(np.union1d(matched_emails, matched_name_and_zip_and_last_four), matched_name_and_zip_and_ip)\n    return df_youtube.iloc[all_matches]\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of some of\n# this question's test cases. Feel free to add, edit, or\n# remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        pass\n",
+            "unitTests": "import program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        pass\n"
+        }
+    },
+    "customInputVars": [],
+    "tests": [],
+    "jsonTests": [],
+    "changelog": []
+}

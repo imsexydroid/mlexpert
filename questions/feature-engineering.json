@@ -1,0 +1,63 @@
+{
+    "uid": "feature-engineering",
+    "testStrategy": "DATA_PROCESSING",
+    "name": "Feature Engineering",
+    "version": 0,
+    "releaseDate": "2023-04-08T00:00:00Z",
+    "category": "Data Processing",
+    "difficulty": 0,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "mlexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "python"
+    ],
+    "submissionStatistics": {
+        "correctCount": 162,
+        "failureCount": 28
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "810395992",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Ryan Doan",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 204
+    },
+    "prompt": "<div class=\"html\">\n<p>\n  You're a data scientist for a real estate division of an investment bank. Given\n  the data following data, perform feature engineering that results in a dataframe\n  that can be used in a model to predict the tax liabilities for a particular home.\n</p>\n<p>The format of the <span>df_houses</span> dataframe is:</p>\n<pre>\n  +---------+---------------+---------------+------------+---------------+------+-------------------+\n  | (index) | avg_room_sqft | avg_bath_sqft | land_value | tax_liability | year | location          |\n  +---------+---------------+---------------+------------+---------------+------+-------------------+\n  | 0       | 39.1          | 18.7          | 181000.0   | 3750.0        | 2007 | \"Los Angeles, CA\" |\n  | 1       | 39.5          | 17.4          | 186000.0   | 3800.0        | 2007 | \"Chicago, IL\"     |\n  | 2       | 40.3          | 18.0          | 195000.0   | 3250.0        | 2007 | \"Chicago, IL\"     |\n  | 3       |               |               |            |               | 2007 | \"Houston, TX\"     |\n  | 4       | 36.7          | 19.3          | 193000.0   | 3450.0        | 2007 | \"Chicago, IL\"     |\n  | 5       | 39.3          | 20.6          | 190000.0   | 3650.0        | 2007 | \"Houston, TX\"     |\n  | 6       | 38.9          | 17.8          | 181000.0   | 3625.0        | 2007 | \"Phoenix, AZ\"     |\n<span class=\"CodeEditor-promptComment\"># ...</span>\n<span class=\"CodeEditor-promptComment\"># More of the same kind of data.</span>\n</pre>\n<p>\n  Implement <span>get_features</span> to impute the following missing column values\n  with the location's averages:\n</p>\n<ul>\n  <li>tax_liability</li>\n  <li>land_value</li>\n  <li>avg_bath_sqft</li>\n  <li>avg_room_sqft</li>\n</ul>\n<p>\n  As well, <span>get_features</span> should perform one-hot encoding for the following\n  columns:\n</p>\n<ul>\n  <li>year</li>\n  <li>location</li>\n</ul>\n<p>\n  Finally, perform min-max scaling for each column in the dataframe.\n</p>\n<p>\n  The columns of the result returned from <span>get_features</span> should be in the order of:\n</p>\n<ul>\n  <li>avg_room_sqft</li>\n  <li>avg_bath_sqft</li>\n  <li>land_value</li>\n  <li>tax_liability</li>\n  <li>2007</li>\n  <li>2008</li>\n  <li>2009</li>\n  <li>Chicago, IL</li>\n  <li>Dallas, TX</li>\n  <li>Houston, TX</li>\n  <li>Los Angeles, CA</li>\n  <li>New York City, NY</li>\n  <li>Philadelphia, PA </li>\n  <li>Phoenix, AZ</li>\n  <li>San Antonio, TX</li>\n  <li>San Diego, CA</li>\n  <li>San Jose, CA</li>\n</ul>\n</div>",
+    "hints": [
+        "<p>\n  First, we need to impute the missing values of for the columns listed in the prompt.\n  This requires use to group the rows by location and then find the mean. Of each column.\n  Finally, we need to assign these means to the missing values.\n</p>\n",
+        "\n<p>\n  Then, we need to one-hot encode the other columns listed in the prompt. This\n  means creating dummy values for those columns and then dropping the original\n  columns.\n</p>\n",
+        "\n<p>\n  Finally, we need to min-max scale all the values in the dataframe. This means\n  subtracting the min value for each column from each columns value and then dividing\n  these values by the range of each column's respective values.\n</p>"
+    ],
+    "spaceTime": "",
+    "notes": "",
+    "isSlowExecution": true,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "import numpy as np\nimport pandas as pd\n\ndef get_features(df_houses):\n    pass\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport numpy as np\nimport pandas as pd\n\ndef ohe_column(df, column_name):\n    encoded_variable = pd.get_dummies(df[column_name])\n    df = df.join(encoded_variable)\n    df = df.drop([column_name], axis=1)\n\n    return df\n\ndef impute_values_by_location(df, column_name):\n    impute_indices = df.iloc[np.argwhere(df[column_name].isnull().values).ravel()].index.values\n    impute_locations = df.iloc[impute_indices]['location'].values\n    impute_values = df.groupby('location').mean()[column_name]\n\n    df.iloc[impute_indices, df.columns.get_loc(column_name)] = impute_values[impute_locations].values\n\n    return df\n\ndef get_features(df_houses):\n    df_houses = impute_values_by_location(df_houses, 'tax_liability')\n    df_houses = impute_values_by_location(df_houses, 'land_value')\n    df_houses = impute_values_by_location(df_houses, 'avg_bath_sqft')\n    df_houses = impute_values_by_location(df_houses, 'avg_room_sqft')\n\n    df_houses = ohe_column(df_houses, 'year')\n    df_houses = ohe_column(df_houses, 'location')\n\n    df_houses = (df_houses - df_houses.min()) / (df_houses.max() - df_houses.min())\n\n    return df_houses\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of some of\n# this question's test cases. Feel free to add, edit, or\n# remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        pass\n",
+            "unitTests": "import program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        pass\n"
+        }
+    },
+    "customInputVars": [],
+    "tests": [],
+    "jsonTests": [],
+    "changelog": []
+}

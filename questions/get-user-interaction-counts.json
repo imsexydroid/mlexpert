@@ -1,0 +1,64 @@
+{
+    "uid": "get-user-interaction-counts",
+    "testStrategy": "DATA_PROCESSING",
+    "name": "Get User Interaction Counts",
+    "version": 0,
+    "releaseDate": "2021-05-24T00:00:00Z",
+    "category": "Data Processing",
+    "difficulty": 0,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "mlexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "python"
+    ],
+    "submissionStatistics": {
+        "correctCount": 481,
+        "failureCount": 223
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "552663204",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Ryan Doan",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 120
+    },
+    "prompt": "<div class=\"html\">\n<p>Consider the following dataframe:</p>\n<pre>\n+------------+-------------------+--------+---------------+-----------+\n|request_path|        search_term| user_id|     ip_address|       date|\n+------------+-------------------+--------+---------------+-----------+\n|      search|Saving Private Ryan|09663ea6| 168.196.83.238| 2021-04-07|\n|      search|  Fear and Loathing|63f84e80|   116.103.0.64| 2021-04-07|\n|      search|     Legally Blonde|31c73683|   9.47.206.231| 2021-04-07|\n|      search|     Legally Blonde|010b4076|  198.45.207.12| 2021-04-07|\n|      search|The Hills Have Eyes|31c73683|248.212.242.192| 2021-04-07|\n|      search|         Knives Out|8173164f|  65.166.90.163| 2021-04-01|\n<span class=\"CodeEditor-promptComment\"># ...</span>\n<span class=\"CodeEditor-promptComment\"># More of the same kind of data.</span>\n</pre>\n<p>\n  It represents user interactions with movie search pages. Each interaction is\n  represented by the <span>user_id</span> of the user who made it, the movie\n  search term that they looked for, and the date of the interaction, amongst\n  other things.\n</p>\n<p>\n  Use this interaction dataframe, accessible as\n  <span>search_interaction_df</span> in the code, to create a features dataframe\n  of the following form:\n</p>\n<pre>\n+--------+-----------------------+----------------------+---------------------+\n| user_id|month_interaction_count|week_interaction_count|day_interaction_count|\n+--------+-----------------------+----------------------+---------------------+\n|010b4076|                     xx|                    xx|                   xx|\n|31c73683|                     xx|                    11|                   xx|\n|8173164f|                     30|                    xx|                    2|\n|f77ad2d3|                     xx|                    xx|                    2|\n|25050522|                     xx|                     8|                   xx|\n|bfb27c75|                     xx|                     8|                    2|\n|09663ea6|                     xx|                    xx|                   xx|\n|ca7aacf2|                     xx|                     1|                   xx|\n|63f84e80|                     xx|                    xx|                    3|\n|cbb81ed7|                     24|                    xx|                   xx|\n+--------+-----------------------+----------------------+---------------------+\n</pre>\n<p>\n  Each <span>user_id</span> in the returned dataframe should have entries in the\n  <span>month_interaction_count</span>, <span>week_interaction_count</span>, and\n  <span>day_interaction_count</span> columns representing the number of search\n  page interactions that the user had over the past month, week, and day,\n  respectively.\n</p>\n<p>\n  The past month, week, and day should be based off of the latest date present\n  in <span>search_interaction_df</span>; specifically, they should be the last\n  30, 7, and 1 days before the last date, respectively.\n</p>\n</div>",
+    "hints": [
+        "<p>\n  First, we need to find the max date from the <span>date</span> column of the\n  interactions dataframe, which will serve as the reference date for the past\n  month, week, and day.\n</p>\n",
+        "\n<p>\n  Then, we need find all of the interactions that happened in the past month and\n  group them by each <span>user_id</span>. We need to repeat this process for\n  the past week and day. Note that we might need to rename some columns.\n</p>\n",
+        "\n<p>\n  Next, we need to join all of the month, week, and day interaction counts into\n  a single dataframe.\n</p>\n",
+        "\n<p>\n  Lastly, we need to take care of any nulls that might have been introduced\n  while joining the dataframes.\n</p>"
+    ],
+    "spaceTime": "",
+    "notes": "",
+    "isSlowExecution": true,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "def get_user_interaction_counts(search_interaction_df):\n    # Write your code here.\n    pass\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nfrom datetime import datetime, timedelta\n\n\ndef get_user_interaction_counts(search_interaction_df):\n    latest_date_string = search_interaction_df.agg({\"date\": \"max\"}).collect()[0][0]\n    latest_date = datetime.strptime(latest_date_string, \"%Y-%m-%d\")\n\n    user_month_counts = get_df_counts_from_date_by_user_id(search_interaction_df, latest_date, 30)\n    user_week_counts = get_df_counts_from_date_by_user_id(search_interaction_df, latest_date, 7)\n    user_day_counts = get_df_counts_from_date_by_user_id(search_interaction_df, latest_date, 1)\n\n    user_month_counts = user_month_counts.withColumnRenamed(\"count\", \"month_interaction_count\")\n    user_week_counts = user_week_counts.withColumnRenamed(\"count\", \"week_interaction_count\")\n    user_day_counts = user_day_counts.withColumnRenamed(\"count\", \"day_interaction_count\")\n\n    user_interaction_counts = user_month_counts.join(user_week_counts, [\"user_id\"], \"left\")\n    user_interaction_counts = user_interaction_counts.join(user_day_counts, [\"user_id\"], \"left\")\n    user_interaction_counts = user_interaction_counts.na.fill(0)\n\n    return user_interaction_counts\n\n\ndef get_df_counts_from_date_by_user_id(df, end_date, days_delta):\n    start_date = end_date - timedelta(days=days_delta)\n\n    return df.where(df[\"date\"].between(start_date, end_date)).groupBy(\"user_id\").count()\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of some of\n# this question's test cases. Feel free to add, edit, or\n# remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        pass\n",
+            "unitTests": "import program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        pass\n"
+        }
+    },
+    "customInputVars": [],
+    "tests": [],
+    "jsonTests": [],
+    "changelog": []
+}

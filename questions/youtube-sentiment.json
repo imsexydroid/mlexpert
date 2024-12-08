@@ -1,0 +1,64 @@
+{
+    "uid": "youtube-sentiment",
+    "testStrategy": "DATA_PROCESSING",
+    "name": "YouTube Sentiment",
+    "version": 0,
+    "releaseDate": "2023-04-08T00:00:00Z",
+    "category": "Data Processing",
+    "difficulty": 0,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "mlexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "python"
+    ],
+    "submissionStatistics": {
+        "correctCount": 250,
+        "failureCount": 73
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "810737838",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Ryan Doan",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 84
+    },
+    "prompt": "<div class=\"html\">\n<p>\n  As a data analyst for a marketing agency, your services have been requested to\n  advise on the best type of content to create that has the highest potential customer\n  sentiment for prospective advertisers. Using YouTube channel data, determine which\n  content has the highest sentiment.\n</p>\n<p>Consider the following dataframe:</p>\n<pre>\n+------------+--------------------+---------------+--------+---------+\n|    video_id|               title|    category_id|   likes| dislikes|\n+------------+--------------------+---------------+--------+---------+\n| VYOjWnS4cMY| Childish Gambino...|          Music| 5023450|   343541|\n| r-3iathMo7o| The ULTIMATE $30...|     Sci & Tech|  129906|    10064|\n| EAGhzuitLXU| Ed Sheeran - Sup...|          Music|  198930|     3789|\n| pTysrwci0pU|     I Got A Perf...| People & Blogs|  312397|     3080|\n| J6R0X6NTnSw|      Meghan Trai...|          Music|  135566|     4702|\n| BQ_0QLL2gqI|  Hailee Steinfel...|          Music|  196595|     2330|\n<span class=\"CodeEditor-promptComment\"># ...</span>\n<span class=\"CodeEditor-promptComment\"># More of the same kind of data.</span>\n</pre>\n<p>\n  It represents information about each <span>video_id</span>.\n</p>\n<p>\n  Use this dataframe, accessible as\n  <span>video_stats_df</span> in the code, to create and return a dataframe\n  of the following form sorted by descending <span>mean_sentiment</span>:\n</p>\n<pre>\n+---------------+---------------+\n|    category_id| mean_sentiment|\n+---------------+---------------+\n| Pets & Animals|             xx|\n|          Shows|             xx|\n|          Music|             xx|\n</pre>\n<p>\n  Sentiment here is defined as the number of likes over the total number of likes and dislikes. We need to determine each category's average sentiment.\n</p>\n</div>",
+    "hints": [
+        "<p>\n  First, we need to create a new column that contains the sentiment for each video.\n</p>\n",
+        "\n<p>\n  Then, we need to group the videos by category.\n</p>\n",
+        "\n<p>\n  Next, we need to find the average sentiment for each category.\n</p>\n",
+        "\n<p>\n  Lastly, we need to create and return a dataframe that contains only the mean sentiments\n  per category and sort by those mean sentiments in descending order.\n</p>"
+    ],
+    "spaceTime": "",
+    "notes": "",
+    "isSlowExecution": true,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "def get_youtube_sentiment(video_stats_df):\n    # Write your code here.\n    pass\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\ndef get_youtube_sentiment(video_stats_df):\n    video_stats_df['sentiment'] = (video_stats_df['likes'] / (video_stats_df['likes'] + video_stats_df['dislikes']))\n    mean_sentiment_df = video_stats_df.groupby('category_id').mean()\n    mean_sentiment_df = mean_sentiment_df.sort_values(\"sentiment\", ascending=False)\n    mean_sentiment_df['mean_sentiment'] = mean_sentiment_df['sentiment']\n    mean_sentiment_df = mean_sentiment_df.filter(['mean_sentiment'])\n    return mean_sentiment_df\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of some of\n# this question's test cases. Feel free to add, edit, or\n# remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        pass\n",
+            "unitTests": "import program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        pass\n"
+        }
+    },
+    "customInputVars": [],
+    "tests": [],
+    "jsonTests": [],
+    "changelog": []
+}
