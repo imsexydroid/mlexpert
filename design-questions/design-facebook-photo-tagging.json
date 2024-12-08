@@ -1,0 +1,106 @@
+{
+    "uid": "design-facebook-photo-tagging",
+    "name": "Design Facebook Photo Tagging",
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "mlexpert"
+        ],
+        "isAvailable": true
+    },
+    "releaseDate": "2021-03-16T12:00:00-04:00",
+    "isReleased": true,
+    "video": {
+        "vimeoId": "545867522",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "",
+        "style": null
+    },
+    "prompt": "<p>\n  Design a feature that reduces the effort of tagging people in photos when a\n  user uploads a photo to Facebook.\n</p>\n",
+    "walkthrough": [
+        {
+            "title": "Gathering System Requirements",
+            "content": "<p>\n    As with any ML design interview question, the first thing that we want to\n    do is gather requirements. We need to figure out what we need to build\n    and what we don't need to build.\n</p>\n<p>\n    We're designing a system which allows users to more easily tag other users\n    in photos they upload by presenting suggestions for which users are in the\n    photo.\n</p>\n<p>To accomplish this, we'll need to do 5 ML-related tasks to implement tag suggestions:</p>\n<ul>\n    <li>Image and Label Collection</li>\n    <li>Image Pre-processing</li>\n    <li>Face Detection</li>\n    <li>Face Recognition</li>\n    <li>Performance Measurement</li>\n</ul>\n\n<p>We'll also need to rely on systems which we won't touch on or design:</p>\n<ul>\n    <li>The website's UI displaying the suggestions</li>\n    <li>The inference service providing the suggestions to the UI</li>\n    <li>The HDFS cluster and underlying processing cluster(s)</li>\n</ul>"
+        },
+        {
+            "title": "Image and Label Collection",
+            "content": "<p>\n    Assuming we have access to images, we'll need two roughly equal sized\n    samples of labeled images. One sample where each image contains one or\n    more faces and another sample where each image contains no faces.\n    The images with faces in them should contain faces at different scales,\n    contrasts, poses, and facial expressions. To start it should include frontal faces\n    with no occlusions or illumination problems. We'll start with roughly 5000\n    samples of each image class, faces and no faces.\n</p>\n<p>\n    To get the images labeled we'll need some annotation software which provides\n    images and to a workforce so that the images can be labeled appropriately.\n    The annotation software should provide examples of what frontal face images\n    are and are not. This will provide labels for the images so that we can train a\n    model which detects faces in images.\n</p>"
+        },
+        {
+            "title": "Image Pre-processing",
+            "content": "<p>\n    This stage is relatively simple. We can start by standardizing the images.\n    Here, that means finding the mean and standard deviation of all the pixel\n    values across the entire training set. For each pixel of each image we will\n    subtract the mean and divide by the standard deviation.\n</p>"
+        },
+        {
+            "title": "Face Detection",
+            "content": "<p>\n    Before we can perform facial recognition which will enable us to provide\n    tag suggestions for photos, we need to detect the faces in an image.\n</p>\n<p>\n    Generally, we would use a pre-trained model for this. Since we're dealing\n    with only frontal faces, we can use OpenCV's implementation of a cascade\n    classifier. It's a model which uses the Viola-Jones algorithm to detect\n    objects. The algorithm, based on the Viola-Jones framework, uses a cascade\n    of Haar-based features to determine if a subsection of an image contains\n    a face or not.\n</p>\n<p>\n    Haar-based features are filters placed on top of an image where\n    the sum of some parts of the image subsection are subtracted from another\n    sum of parts in the subsection. This is done in an effort to detect areas of\n    adjacent darkness and brightness. An example of why this is helpful in\n    detecting faces is that, typically, the area below a face's eyes is brighter\n    than the eyes themselves.\n\n    Haar features are created from subsections of an image, or window.\n    This window will have effectively every possible Haar feature tried on it of\n    all possible sizes. This includes line features, edge features, and four\n    rectangle features.\n\n    To speed up the calculations of all these Haar-based features, Viola-Jones\n    works by creating an integral image which stores the cumulative sums of\n    pixel values in the image. This allows for efficient Haar feature calculations.\n\n    To narrow down to the large number of features generated from the exhaustive\n    search for all Haar features, each independent Haar-based feature will be\n    used in a weak classifier. The weak classifier takes the difference between\n    the sum of the pixels in each Haar subregion and learns the best threshold\n    of that difference according to which threshold produces the best\n    classification rate. A weighted sum of these weak classifiers will\n    form a strong classifier. Adaboost is used to assign weights to each of the\n    weak classifiers based on their ability to independently classify\n    subsections (face or no face) of images correctly. This results in only a\n    small subset of the Haar-based features being used.\n</p>\n<p>\n    Next, we will use these selected Haar-based features to detect faces\n    in an image.\n\n    Each image will be examined with a 24x24 pixel sliding window. The window\n    evaluates each Haar-based feature stage in descending order by the weights\n    determined by Adaboost. A stage contains one or more weak classifiers.\n    If the sliding window does not pass the threshold of a stage, which is\n    determined in training, the sliding window moves on to the next subsection\n    to avoid performing unnecessary evaluations of subsequent stages.\n    If the sliding window passes the threshold of each stage, then a\n    bounding box can be placed around the subsection to indicate a face is in\n    the subsection of the image.\n\n    A bounding box is a series of points, typically four, to make up the\n    corners of a square which forms a box around the object we're\n    attempting to detect. In our case, this box will surround a face.\n\n    To handle different scales, or sizes, of faces within an image we'll\n    use an image pyramid. An image pyramid starts with the original\n    image and down samples that image according to neighboring pixels.\n    This downsampled image is then run through the same process\n    as the original image.\n</p>"
+        },
+        {
+            "title": "Face Recognition",
+            "content": "<p>\n    Now that we have detected the faces, we want to be able to recognize the\n    faces.\n\n    For this scenario, we generally want to represent the faces in an\n    embedding space because we likely won't have labeled identities of the faces\n    in the photos when they're uploaded. When someone uploads a picture to\n    Facebook, the photo could have the uploader, friends, family, or even\n    strangers in the photo. If we represent faces in an embedding space then\n    we can eventually label these embeddings with identities as they are given.\n    Here, that means waiting until users manually tag on another their photos or\n    themselves in others' photos.\n</p>\n<p>\n    These embeddings can be obtained from a pre-trained model such as SphereFace.\n\n    SphereFace is a convolutional neural network with a ResNet architecture.\n    After several convolutions and some max poolings, images of faces are\n    represented as embeddings. These embeddings are optimized with a softmax\n    loss to have more distance between unlike faces and less distance between\n    like faces. After the model is trained, the model can produce embeddings for\n    unseen faces.\n\n    To differentiate faces, a standard softmax isn't the greatest loss to use\n    because there's a low inter-class variance and high intra-class variance.\n    All that means is that two unlike faces may be smiling, have two eyes, a\n    nose, and a mouth (low variance). However, two like faces, belonging to\n    the same user, could be in different poses, lighting, contrasts, and be\n    making different facial expressions (high variance).\n\n    We need a loss function that fights this tendency in the data and\n    attempts to explicitly separate unlike faces and compress the distances of\n    like faces. The loss function which SphereFace uses is called angular\n    margin softmax.\n\n    The general idea of angular margin softmax is to project the embeddings on a\n    sphere (hence SphereFace) and introduce a tunable margin which encourages\n    large angular distances for inter-class faces and smaller angular distances\n    for intra-class faces.\n</p>\n<p>\n    We'd use this trained model to recognize faces from the bounding boxes\n    produced by the face detection algorithm.\n\n    Let's say someone uploads a new photo to their account. The image would\n    start by going through the face detection process we talked about. Then the\n    user will have the opportunity to click on those bounding boxes produced\n    by the face detection algorithm. Meanwhile, the face subsection will be sent\n    through the pre-trained SphereFace model which will produce a face\n    embedding. This face embedding will be used in a nearest neighbor algorithm.\n    Then, there's a few things which can happen\n\n    <li>\n      We haven't seen the face yet, based on a threshold of distance or similarity in\n      reference to faces we've already seen. So in our case, if the cosine similarity\n      is below some threshold, then we won't supply a suggested tag for that\n      bounding box.\n    </li>\n    <li>\n      We have seen the face one or more times, meaning the threshold is not\n      breached for an unseen face, but the other similar faces we've seen do\n      not yet have an identity. In this case, we also won't return a suggested\n      tag for that bounding box.\n    <li>\n      The happy case where the KNN returns a series of identified faces.\n      Some predefined rule, for instance the top m items found by the\n      KNN algorithm match, then we'll return the suggested tag.\n      To tune m, we'd do hyperparameter tuning through offline evaluation.\n      If the m threshold isn't met, we can return more than one tag suggestion\n      or none if there is generally no consensus around the top m.\n    </li>\n</p>"
+        },
+        {
+            "title": "Performance Measurement",
+            "content": "<p>\n    At the model level, it's good to measure the accuracy, precision, recall,\n    and f1 score at ranks 1 through k. Here, the k-th rank is the k-th face in the\n    k-nearest neighbors of face embeddings.\n\n    At the business level, we're assuming the feature lowers the friction of a user\n    wanting to tag people in their photos. If we can enable more users to be\n    tagged in more photos, it will then show up on their friends' timelines\n    providing more content to users' feeds which encourages users to stay\n    scrolling longer which can likely be related back to a lift in ad revenue.\n    We could verify this through A/B testing.\n</p>"
+        },
+        {
+            "title": "Bonus",
+            "content": "<p>\n    If we assume there are non-frontal faces, we need a model to perform alignment.\n    This process is sometimes called 'frontalization'.\n\n    Generally, the goal with side faces, some small occlusions, and maybe\n    images with illumination problems is to find landmarks on the face.\n    We can use a pre-trained Multi-task Cascade Convolution Network (MTCNN).\n    It works by generating and refining candidate bounding boxes with 3 stages\n    of CNNs. It outputs 5 landmarks. The benefit with MTCNN is that it frames face\n    detection and alignment as a joint problem.\n</p>"
+        },
+        {
+            "title": "High Level System Diagram",
+            "content": "<img\n    width=\"100%\"\n    src=\"https://assets.algoexpert.io/mle/facebook_tagging_high_level.png\"\n    alt=\"High Level System Diagram\"\n/>"
+        },
+        {
+            "title": "Tag Suggestion Service Diagram",
+            "content": "<img\n    width=\"100%\"\n    src=\"https://assets.algoexpert.io/mle/facebook_tag_suggestion.png\"\n    alt=\"Tag Suggestion Service Diagram\"\n/>"
+        }
+    ],
+    "hints": [
+        {
+            "question": "When you say reduce the effort of tagging people in photos upon upload, do you mean automatically tagging or just presenting suggestions on which users should be tagged in the photo?",
+            "answer": "Let's present a list of suggestions."
+        },
+        {
+            "question": "Will these suggestions be in a dropdown menu, perhaps appearing when a user clicks on a face?",
+            "answer": "Yes, there should be a box surrounding people's faces in photos such that when uploading the photo, users have the chance to click the boxes and tag a user."
+        },
+        {
+            "question": "Do I need to design the ingestion of these photos into some analysis system?",
+            "answer": "Assume that the photos you have access to come into an HDFS cluster from a batch ingestion each day."
+        },
+        {
+            "question": "Do I have to design the system which serves the tag suggestions, or just the model(s)?",
+            "answer": "Let's not focus on serving the predictions."
+        },
+        {
+            "question": "Okay, do I need to design the ingestion of these photos into some analytics system?",
+            "answer": "Assume that the photos you have access to come into an HDFS cluster from a batch ingestion each day from our PostgreSQL cluster."
+        },
+        {
+            "question": "Can I assume that these images are in HDF5 format under 30MB with dimensions under 1500x1500?",
+            "answer": "Yes, that's fine."
+        },
+        {
+            "question": "Can I use pre-trained models?",
+            "answer": "Yes, but you have to explain how you'd train and use them, and how they work."
+        },
+        {
+            "question": "Can I assume that we have access to a workforce which can label images?",
+            "answer": "Yes, but go into detail on how you'd use this workforce to label images."
+        },
+        {
+            "question": "Can I assume that we only need to detect frontal faces, no occlusions, and no severe illumination problems?",
+            "answer": "To start out with, yes. At the end of the interview, we'll revisit this."
+        },
+        {
+            "question": "Will we want to detect faces from various distances away from the camera lens?",
+            "answer": "Yes, you should design a system which support multiple scales of faces."
+        },
+        {
+            "question": "I'm assuming that we want to be able to detect more than one face per image?",
+            "answer": "Yes. That's right."
+        }
+    ]
+}
